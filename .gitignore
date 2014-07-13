@@ -1,0 +1,8 @@
+### NetBeans ###
+nbproject/
+
+### Node ###
+node_modules
+
+### Developer Config ###
+dev-config.php
