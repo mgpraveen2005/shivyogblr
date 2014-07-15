@@ -5,7 +5,7 @@
     </head>
     <body>
         {include file='desktop/navbar.tpl'}
-        <div class="container">
+        <div class="container content-wrap">
             <div class="col-md-12 white-box">
                 <h1>Dashboard</h1>                
                 <div class="col-xs-12 article-content">

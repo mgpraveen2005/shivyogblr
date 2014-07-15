@@ -20,6 +20,7 @@
                 {if $user}
                 <li class="active dropdown"><a class="icon-doc-text-inv" href="#">{$username}</a>
                     <ul class="dropdown-menu">
+                        <li><a href="/admin">Dashboard</a></li>
                         <li><a href="/admin/user/{$user}">My Profile</a></li>
                         <li><a href="/admin/logout">Logout</a></li>
                    </ul>                

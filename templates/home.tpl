@@ -5,7 +5,7 @@
     </head>
     <body>
         {include file='navbar.tpl'}
-        <div class="container nopad-left">
+        <div class="container nopad-left content-wrap">
             <div class="col-md-9 white-box">
                 <h1>{$title}</h1>
                 <div class="col-xs-12 article-content">

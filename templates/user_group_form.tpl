@@ -1,11 +1,11 @@
 <html>
     <head>
-        <title>www.sportskeeda.com</title>
+        <title>Manage Users | Shivyog Bangalore</title>
         {include file='production/header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
-        <div class="container">
+        <div class="container content-wrap">
             <div class="col-md-12 white-box">
                 <h1>Dashboard</h1>                
                 <div class="col-xs-12 article-content">
@@ -25,8 +25,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><button>Save</button></td>
-                                <td><a href="/admin/groups">Cancel</a></td>
+                                <td><button class="ok-btn">Save</button></td>
+                                <td><a href="/admin/groups" class="cancel-btn">Cancel</a></td>
                             </tr>
                         </table>
                     </form>

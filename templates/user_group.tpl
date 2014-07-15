@@ -1,11 +1,11 @@
 <html>
     <head>
-        <title>www.sportskeeda.com</title>
+        <title>Manage Users | Shivyog Bangalore</title>
         {include file='production/header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
-        <div class="container">
+        <div class="container content-wrap">
             <div class="block">
                 <ul class="horizontal-list">
                     <header class="col-xs-12 no-pad">
@@ -20,8 +20,8 @@
             <div class="col-md-12 white-box">
                 <h1>User Groups</h1>
                 <div class="col-xs-12 article-content">
-                    <a href="/admin/group">Add</a>
-                    <table border="1">
+                    <a href="/admin/group" class="ok-btn">Add</a><br>
+                    <table class="table-list">
                         <thead>
                             <tr>
                                 <td>User Group Name</td>
