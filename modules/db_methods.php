@@ -129,18 +129,18 @@ function save_order($order_data) {
     $db = getConnection();
     if (isset($order_data['order_id']) && $order_data['order_id'] > 0) {
         $query = 'UPDATE `order`';
-        $where = ', status = '.$order_data['status'].' WHERE id = ' . $order_data['order_id'];
+        $where = ' WHERE id = ' . $order_data['order_id'];
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `order`';
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?';
+    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?, user_id = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('iii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id']);
+    $stmt->bind_param('iiii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id'], $order_data['user_id']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -152,7 +152,7 @@ function save_payment($payment_data) {
     $db = getConnection();
     if (isset($payment_data['payment_id']) && $payment_data['payment_id'] > 0) {
         $query = 'UPDATE `payment`';
-        $where = ' , is_approved = '.$payment_data['is_approved'].', approved_by = '.$payment_data['approved_by'].' WHERE id = ' . $payment_data['payment_id'];
+        $where = ' WHERE id = ' . $payment_data['payment_id'];
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `payment`';
@@ -228,11 +228,11 @@ function save_customer($customer_data) {
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET firstname = ?, lastname = ?, email = ?, contact_no = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?';
+    $set_query = ' SET firstname = ?, lastname = ?, email = ?, contact_no = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?, gender = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('sssssssssss', $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no']);
+    $stmt->bind_param('ssssssssssss', $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no'], $customer_data['gender']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -291,10 +291,15 @@ function get_orders($event_id, $user_id = 0, $page = 0) {
 
 function get_order($id){
     $db = getConnection();
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, o.`status`, ct.`category_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` WHERE o.id  = '.$id;
+    $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, p.id as payment_id, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
+        FROM `order` o 
+        INNER JOIN customer c ON o.`customer_id` = c.`id` 
+        INNER JOIN payment p ON p.order_id = o.id
+        LEFT JOIN dd_details d ON p.dd_id = d.id 
+        WHERE o.id  = '.$id;
     $result = $db->query($query);
     $rs = array();
-    while ($row = $result->fetch_object()) {
+    while ($row = $result->fetch_assoc()) {
         $rs[] = $row;
     }
     return $rs;
@@ -318,5 +323,32 @@ function get_event($id) {
 function get_category($event_id) {
     $rs = get_record('category', $condition = ' WHERE event_id = '.$event_id);
     return $rs;
+}
+
+function set_reg_no($order_id, $category_id){
+    $db = getConnection();
+    $cat_rs = get_record('category', $condition = ' WHERE id = '.$category_id);
+    $category_data = $cat_rs[0];
+    
+    $select_query = 'SELECT count(id) as counter FROM `order` WHERE category_id = '.$category_id;
+    $result = $db->query($select_query);
+    $counter = $result->fetch_assoc();
+    
+    $reg_no = $category_data['category_slug'].'-'.$counter['counter'];
+    
+    $query = 'UPDATE `order` SET reg_no = ? WHERE id = ?';
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('si', $reg_no, $order_id);
+    $stmt->execute();
+    return $reg_no;
+}
+
+function check_dd_exists($data){
+    $db = getConnection();
+    $dd_check = get_record('dd_details', $condition = ' WHERE dd_number = '.$data['dd_number'].' AND dd_bank = "'.$data['dd_bank'].'"');
+    if(!empty($dd_check)){
+        return $dd_check[0]['id'];
+    }
+    return FALSE;
 }
 

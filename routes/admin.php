@@ -185,18 +185,34 @@ $app->get("/admin/registrations(/:page)", $authenticate($app), function ($page =
                 $user_id = $_SESSION['user_id'];
             }
             $orders = get_orders($event_id, $user_id, $page);
-            $app->render('../templates/order_list.tpl', array('orders'=>$orders));
+            $app->render('../templates/order_list.tpl', array('orders' => $orders));
         });
 
 $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use ($app) {
             $event_id = 1;
             $category = get_record('category', ' WHERE event_id = ' . $event_id);
-            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => ''));
+            $data = array('id' => 0, 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => '', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
+            if ($id) {
+                $order = get_order($id);
+                $data = $order[0];
+                if (isset($data['dob'])) {
+                    $data['dob'] = date('d-m-Y', strtotime($data['dob']));
+                }
+
+                if (isset($data['dd_date'])) {
+                    $data['dd_date'] = date('d-m-Y', strtotime($data['dd_date']));
+                }
+            }
+            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id));
         });
 
 $app->post("/admin/register", $authenticate($app), function () use ($app) {
             $req = $app->request();
             $data = $req->params();
+
+            $is_new = 1;
+            if (isset($data['order_id']) && $data['order_id'] > 0)
+                $is_new = 0;
 
             if (isset($data['dob'])) {
                 $data['dob'] = date('Y-m-d', strtotime($data['dob']));
@@ -207,25 +223,45 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             }
 
             $user_id = $_SESSION['user_id'];
-            $data['dd_id'] = save_dd_details($data);
+            
+            $dd_exists = '';
+            if(!isset($data['dd_id']) || $data['dd_id'] < 1){
+                $dd_exists = check_dd_exists($data);
+            }
+            if($dd_exists)
+                $data['dd_id'] = $dd_exists;
+            else {
+                $data['dd_id'] = save_dd_details($data);
+            }
 
-            $dd_history_data = $data;
-            $dd_history_data['status'] = 'possession';
-            $dd_history_data['handed_by'] = $dd_history_data['handed_to'] = $user_id;
-            $dd_history_id = save_dd_history($dd_history_data);
+            if ($is_new) {
+                $dd_history_data = $data;
+                $dd_history_data['status'] = 'possession';
+                $dd_history_data['handed_by'] = $dd_history_data['handed_to'] = $user_id;
+                $dd_history_id = save_dd_history($dd_history_data);
+            }
 
             $customer_data = $data;
             $data['customer_id'] = save_customer($customer_data);
 
             $order_data = $data;
+            $order_data['user_id'] = $user_id;
             $data['order_id'] = save_order($order_data);
+
+            if ($is_new) {
+                $data['reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
+            }
 
             $payment_data = $data;
             $category_data = get_record('category', ' WHERE id = ' . $payment_data['category_id']);
             $payment_data['amount'] = $category_data[0]['amount'];
-            $payment_id = save_payment($payment_data);
+            $data['payment_id'] = save_payment($payment_data);
 
-            $app->redirect('/admin/registrations');
+            if ($is_new) {
+                $app->render('../templates/order_msg.tpl', array('data'=>$data));
+            } else {
+                $app->redirect('/admin/registrations');
+            }
         });
 
 $app->get("/admin/events(/:page)", $authenticate($app), function ($page = 0) use ($app) {
