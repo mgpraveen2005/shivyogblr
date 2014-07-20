@@ -24,6 +24,7 @@ $app->hook('slim.before.dispatch', function() use ($app) {
     $app->view()->setData('user', $user);
     $app->view()->setData('username', $username);
     $app->view()->setData('capability', $capability);
+    $app->view()->setData('pagetitle', 'Shivyog Bangalore');
 });
 
 $app->get("/admin/logout", function () use ($app) {
@@ -182,7 +183,7 @@ $app->get("/admin/registrations(/:page)", $authenticate($app), function ($page =
 });
 
 $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use ($app) {
-    $app->render('../templates/order_form.tpl');
+    $app->render('../templates/order_form.tpl', array('event_type'=>'', 'order'=>''));
 });
 
 $app->get("/admin/events(/:page)", $authenticate($app), function ($page = 0) use ($app) {

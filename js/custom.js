@@ -9,4 +9,7 @@ $(document).ready(function() {
     }, function() {
         $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeOut();
     });
+
+    $('.sy_date').datepicker();
+
 });

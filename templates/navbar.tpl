@@ -18,7 +18,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {if $user}
-                <li class="active dropdown"><a class="icon-doc-text-inv" href="#">{$username}</a>
+                <li class="active dropdown"><a class="icon-down-open" href="#">{$username}</a>
                     <ul class="dropdown-menu">
                         <li><a href="/admin">Dashboard</a></li>
                         <li><a href="/admin/user/{$user}">My Profile</a></li>

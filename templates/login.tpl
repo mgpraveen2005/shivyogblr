@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>www.sportskeeda.com</title>
+        <title>{$pagetitle}</title>
         {include file='production/header.tpl'}
     </head>
     <body>
