@@ -1,6 +1,6 @@
 <?php
 function getConnection() {
-    $mysqli = new mysqli(READ_DB_HOST, READ_DB_USER, READ_DB_PASSWORD, READ_DB_NAME);
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     $mysqli->set_charset("utf8");
     return $mysqli;
 }
