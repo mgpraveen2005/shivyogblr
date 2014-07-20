@@ -9,12 +9,15 @@
             <div class="col-md-12 white-box">
                 <h1>Registration</h1>
                 <div class="col-xs-12 article-content">
-                    <form action="/admin/order" name="reg_form">
+                    <form action="/admin/register" method="post" name="reg_form">
+                        <input type="hidden" name="event_id" value="" />
                         <div class="flow_form">
                             <h5 class="block-title">Transaction Details:</h5>
                             <div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>DD Number </label></div><div class="lbl_last"><input type="text" name="dd_number" value="" required/></div>
+                                    <input type="hidden" name="dd_id" value="" />
+                                    <input type="hidden" name="payment_type" value="dd" />
                                 </div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>DD Amount </label></div><div class="lbl_last"><input type="text" name="dd_amount" value="" required/></div>
@@ -37,7 +40,7 @@
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>PAN Card No. </label></div><div class="lbl_last"><input type="text" name="pan_no" value="" /></div>
                                 </div>
-                                {if $event_type}
+                                {if $category}
                                     <div class="flow_elements">
                                         <div class="lbl_first"><label>Category </label></div>
                                         <div class="lbl_last">
@@ -53,6 +56,9 @@
                             <div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>First Name <span class="star"></span></label></div><div class="lbl_last"><input type="text" name="first_name" id="first_name" value="" required/></div>
+                                    <input type="hidden" name="customer_id" value="" />
+                                    <input type="hidden" name="order_id" value="" />
+                                    <input type="hidden" name="payment_id" value="" />
                                 </div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>Last Name </label></div><div class="lbl_last"><input type="text" name="last_name" id="last_name"  value="" /></div>

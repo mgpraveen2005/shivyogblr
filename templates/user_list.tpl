@@ -10,10 +10,7 @@
                 <ul class="horizontal-list">
                     <header class="col-xs-12 no-pad">
                         <h2 class="col-md-4 block-title">User Management</h2>
-                        <ol class="col-md-8 breadcrumb">
-                            <li><a href="/admin/users">Manage Users</a></li>
-                            <li><a href="/admin/groups">Manage Groups</a></li>
-                        </ol>
+                        {include file='admin-menu.tpl'}
                     </header>
                 </ul>
             </div>

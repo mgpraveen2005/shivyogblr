@@ -129,18 +129,18 @@ function save_order($order_data) {
     $db = getConnection();
     if (isset($order_data['order_id']) && $order_data['order_id'] > 0) {
         $query = 'UPDATE `order`';
-        $where = ' WHERE id = ' . $order_data['order_id'];
+        $where = ', status = '.$order_data['status'].' WHERE id = ' . $order_data['order_id'];
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `order`';
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?, status = ?';
+    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('iiii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id'], $order_data['status']);
+    $stmt->bind_param('iii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -152,18 +152,18 @@ function save_payment($payment_data) {
     $db = getConnection();
     if (isset($payment_data['payment_id']) && $payment_data['payment_id'] > 0) {
         $query = 'UPDATE `payment`';
-        $where = ' WHERE id = ' . $payment_data['payment_id'];
+        $where = ' , is_approved = '.$payment_data['is_approved'].', approved_by = '.$payment_data['approved_by'].' WHERE id = ' . $payment_data['payment_id'];
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `payment`';
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET order_id = ?, amount = ?, payment_type = ?, dd_id = ?, is_approved = ?, approved_by = ?';
+    $set_query = ' SET order_id = ?, amount = ?, payment_type = ?, dd_id = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('idiiii', $payment_data['order_id'], $payment_data['amount'], $payment_data['payment_type'], $payment_data['dd_id'], $payment_data['is_approved'], $payment_data['approved_by']);
+    $stmt->bind_param('idii', $payment_data['order_id'], $payment_data['amount'], $payment_data['payment_type'], $payment_data['dd_id']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -196,9 +196,9 @@ function save_dd_history($dd_history_data) {
 
 function save_dd_details($dd_details_data) {
     $db = getConnection();
-    if (isset($dd_details_data['dd_details_id']) && $dd_details_data['dd_details_id'] > 0) {
+    if (isset($dd_details_data['dd_id']) && $dd_details_data['dd_id'] > 0) {
         $query = 'UPDATE `dd_details`';
-        $where = ' WHERE id = ' . $dd_details_data['dd_details_id'];
+        $where = ' WHERE id = ' . $dd_details_data['dd_id'];
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `dd_details`';
@@ -214,25 +214,25 @@ function save_dd_details($dd_details_data) {
     if ($get_id)
         return getLastInsertedId($db);
     else
-        return $dd_details_data['dd_details_id'];
+        return $dd_details_data['dd_id'];
 }
 
 function save_customer($customer_data) {
     $db = getConnection();
     if (isset($customer_data['customer_id']) && $customer_data['customer_id'] > 0) {
-        $query = 'UPDATE `dd_details`';
+        $query = 'UPDATE `customer`';
         $where = ' WHERE id = ' . $customer_data['customer_id'];
         $get_id = 0;
     } else {
-        $query = 'INSERT INTO `dd_details`';
+        $query = 'INSERT INTO `customer`';
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET firstname = ?, lastname = ?, email = ?, contact_no = ?, contact_type = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?';
+    $set_query = ' SET firstname = ?, lastname = ?, email = ?, contact_no = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('ssssssssssss', $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['contact_type'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no']);
+    $stmt->bind_param('sssssssssss', $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -269,17 +269,21 @@ function get_users($condition = '') {
     return $rs;
 }
 
-function get_orders($page = 0) {
+function get_orders($event_id, $user_id = 0, $page = 0) {
     $db = getConnection();
     $limit = 50;
     if($page > 0){
         $offset = 50*$page;
         $limit = $offset.', 50';
     }
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, o.`status`, ct.`category_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LIMIT '.$limit;
+    $where = ' WHERE o.event_id = '.$event_id;
+    if($user_id)
+        $where = ' AND o.user_id = '.$user_id;
+    
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, o.`status`, ct.`category_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` '.$where.' LIMIT '.$limit;
     $result = $db->query($query);
     $rs = array();
-    while ($row = $result->fetch_object()) {
+    while ($row = $result->fetch_assoc()) {
         $rs[] = $row;
     }
     return $rs;
