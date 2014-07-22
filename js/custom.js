@@ -12,4 +12,75 @@ $(document).ready(function() {
 
     $('.sy_date').datepicker();
 
+    if ($('#js_reg_form').length) {
+        $('#js_reg_form').on('click', '.js_save', function(c) {
+            c.preventDefault();
+            jQuery("input").css('background', '#FFFFFF');
+            if (jQuery.trim(jQuery("#dd_amount").val()).length < 1) {
+                jQuery("#dd_amount").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#dd_number").val()).length < 1) {
+                jQuery("#dd_number").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#dd_date").val()).length < 1) {
+                jQuery("#dd_date").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#dd_bank").val()).length < 1) {
+                jQuery("#dd_bank").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#firstname").val()).length < 1) {
+                jQuery("#firstname").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#contact_no").val()).length < 1) {
+                jQuery("#contact_no").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#city").val()).length < 1) {
+                jQuery("#city").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#country").val()).length < 1) {
+                jQuery("#country").css('background', '#F7BE81').focus();
+                return false;
+            }
+            if (jQuery.trim(jQuery("#dob").val()).length < 1) {
+                jQuery("#dob").css('background', '#F7BE81').focus();
+                return false;
+            }
+            var dd_num = jQuery("#dd_number").val();
+            if (!dd_num.match('^[0-9]{6}$')) {
+                jQuery("#dd_number").css('background', '#F7BE81').focus();
+                alert("Only numbers allowed for DD Number");
+                return false;
+            }
+
+            var pan_num = jQuery("#pan_no").val();
+            if (!pan_num.match('^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]$')) {
+                jQuery("#pan_no").css('background', '#F7BE81').focus();
+                alert("PAN No must match the pattern 5 Letters, 4 Numbers, then 1 Letter");
+                return false;
+            }
+
+            var pincode = jQuery("#pincode").val();
+            if (!pincode.match('^[0-9]*$')) {
+                jQuery("#pincode").css('background', '#F7BE81').focus();
+                alert("Only numbers allowed for PIN Code");
+                return false;
+            }
+
+            var mobile = jQuery("#contact_no").val();
+            if (!mobile.match('^[0-9]*$')) {
+                jQuery("#contact_no").css('background', '#F7BE81').focus();
+                alert("Only numbers allowed for Mobile No");
+                return false;
+            }
+            jQuery("#js_reg_form").trigger("submit");
+        });
+    }
+
 });

@@ -175,17 +175,29 @@ $app->post("/admin/group", $authenticate($app), function () use ($app) {
         });
 
 $app->get("/admin", $authenticate($app), function () use ($app) {
-            $app->render('../templates/admin.tpl');
+            if ($_SESSION['capability'] < 8) {
+                $app->redirect('/admin/registrations');
+            } else {
+                $app->render('../templates/admin.tpl');
+            }
         });
 
-$app->get("/admin/registrations(/:page)", $authenticate($app), function ($page = 0) use ($app) {
+$app->get("/admin/registrations", $authenticate($app), function () use ($app) {
+            $req = $app->request();
+            $page = $req->params('pg');
+            if(!$page)
+                $page = 1;
             $event_id = 1;
             $user_id = 0;
+            $condition = '';
             if ($_SESSION['capability'] < 8) {
                 $user_id = $_SESSION['user_id'];
+                $condition = ' WHERE user_id = '.$user_id;
             }
+            $total_records = get_total_records('`order`','id',$condition);
+            $pagination = show_pagination('/admin/registrations', $page, $total_records);
             $orders = get_orders($event_id, $user_id, $page);
-            $app->render('../templates/order_list.tpl', array('orders' => $orders));
+            $app->render('../templates/order_list.tpl', array('orders' => $orders, 'pagination' => $pagination));
         });
 
 $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use ($app) {

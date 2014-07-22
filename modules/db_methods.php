@@ -12,20 +12,20 @@ function admin_login($email, $password) {
     $col_names = array();
     $row = array();
     $result = array();
-    
+
     while ($field = $meta->fetch_field())
         $col_names[] = &$row[$field->name];
 
     call_user_func_array(array($stmt, 'bind_result'), $col_names);
 
-    while($stmt->fetch()){
+    while ($stmt->fetch()) {
         $data = array();
-        foreach($row as $key => $val)
+        foreach ($row as $key => $val)
             $data[$key] = $val;
 
         $result[] = $data;
     }
-    if(!empty($result))
+    if (!empty($result))
         return $result[0];
 
     return FALSE;
@@ -44,7 +44,7 @@ function save_user($user_data) {
     }
     $set_query = ' SET email = ?, display_name = ?, group_id = ?';
     if (isset($user_data['password']) && !empty($user_data['password'])) {
-        $set_query .= ', `password` = "' . sha1($user_data['password']).'"';
+        $set_query .= ', `password` = "' . sha1($user_data['password']) . '"';
     }
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
@@ -258,9 +258,20 @@ function get_record($table, $condition = '') {
     return $rs;
 }
 
+function get_total_records($table_name, $field_name = 'id', $condition = '') {
+    $db = getConnection();
+    $query = 'SELECT COUNT(' . $field_name . ') AS total FROM ' . $table_name . $condition;
+    $result = $db->query($query);
+    if($result){
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
+    return FALSE;
+}
+
 function get_users($condition = '') {
     $db = getConnection();
-    $query = 'SELECT u.`id`, u.`email`, u.`display_name`, u.`group_id`, g.`group_name` FROM `user` u INNER JOIN `user_group` g ON u.`group_id` = g.`id`'. $condition;
+    $query = 'SELECT u.`id`, u.`email`, u.`display_name`, u.`group_id`, g.`group_name` FROM `user` u INNER JOIN `user_group` g ON u.`group_id` = g.`id`' . $condition;
     $result = $db->query($query);
     $rs = array();
     while ($row = $result->fetch_assoc()) {
@@ -269,18 +280,18 @@ function get_users($condition = '') {
     return $rs;
 }
 
-function get_orders($event_id, $user_id = 0, $page = 0) {
+function get_orders($event_id, $user_id = 0, $page = 1) {
     $db = getConnection();
-    $limit = 50;
-    if($page > 0){
-        $offset = 50*$page;
-        $limit = $offset.', 50';
+    $limit = 30;
+    if ($page > 1) {
+        $offset = 30 * $page;
+        $limit = $offset . ', 30';
     }
-    $where = ' WHERE o.event_id = '.$event_id;
-    if($user_id)
-        $where = ' AND o.user_id = '.$user_id;
-    
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, o.`status`, ct.`category_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` '.$where.' LIMIT '.$limit;
+    $where = ' WHERE o.event_id = ' . $event_id;
+    if ($user_id)
+        $where = ' AND o.user_id = ' . $user_id;
+
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' LIMIT ' . $limit;
     $result = $db->query($query);
     $rs = array();
     while ($row = $result->fetch_assoc()) {
@@ -289,14 +300,14 @@ function get_orders($event_id, $user_id = 0, $page = 0) {
     return $rs;
 }
 
-function get_order($id){
+function get_order($id) {
     $db = getConnection();
     $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, p.id as payment_id, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
         FROM `order` o 
         INNER JOIN customer c ON o.`customer_id` = c.`id` 
         INNER JOIN payment p ON p.order_id = o.id
         LEFT JOIN dd_details d ON p.dd_id = d.id 
-        WHERE o.id  = '.$id;
+        WHERE o.id  = ' . $id;
     $result = $db->query($query);
     $rs = array();
     while ($row = $result->fetch_assoc()) {
@@ -307,35 +318,35 @@ function get_order($id){
 
 function get_events($page = 0) {
     $limit = 20;
-    if($page > 0){
-        $offset = 20*$page;
-        $limit = $offset.', 20';
+    if ($page > 0) {
+        $offset = 20 * $page;
+        $limit = $offset . ', 20';
     }
-    $rs = get_record('event', $condition = ' LIMIT '.$limit);
+    $rs = get_record('event', $condition = ' LIMIT ' . $limit);
     return $rs;
 }
 
 function get_event($id) {
-    $rs = get_record('event', $condition = ' WHERE id = '.$id);
+    $rs = get_record('event', $condition = ' WHERE id = ' . $id);
     return $rs;
 }
 
 function get_category($event_id) {
-    $rs = get_record('category', $condition = ' WHERE event_id = '.$event_id);
+    $rs = get_record('category', $condition = ' WHERE event_id = ' . $event_id);
     return $rs;
 }
 
-function set_reg_no($order_id, $category_id){
+function set_reg_no($order_id, $category_id) {
     $db = getConnection();
-    $cat_rs = get_record('category', $condition = ' WHERE id = '.$category_id);
+    $cat_rs = get_record('category', $condition = ' WHERE id = ' . $category_id);
     $category_data = $cat_rs[0];
-    
-    $select_query = 'SELECT count(id) as counter FROM `order` WHERE category_id = '.$category_id;
+
+    $select_query = 'SELECT count(id) as counter FROM `order` WHERE category_id = ' . $category_id;
     $result = $db->query($select_query);
     $counter = $result->fetch_assoc();
-    
-    $reg_no = $category_data['category_slug'].'-'.$counter['counter'];
-    
+
+    $reg_no = $category_data['category_slug'] . '-' . $counter['counter'];
+
     $query = 'UPDATE `order` SET reg_no = ? WHERE id = ?';
     $stmt = $db->prepare($query);
     $stmt->bind_param('si', $reg_no, $order_id);
@@ -343,10 +354,10 @@ function set_reg_no($order_id, $category_id){
     return $reg_no;
 }
 
-function check_dd_exists($data){
+function check_dd_exists($data) {
     $db = getConnection();
-    $dd_check = get_record('dd_details', $condition = ' WHERE dd_number = '.$data['dd_number'].' AND dd_bank = "'.$data['dd_bank'].'"');
-    if(!empty($dd_check)){
+    $dd_check = get_record('dd_details', $condition = ' WHERE dd_number = ' . $data['dd_number'] . ' AND dd_bank = "' . $data['dd_bank'] . '"');
+    if (!empty($dd_check)) {
         return $dd_check[0]['id'];
     }
     return FALSE;
