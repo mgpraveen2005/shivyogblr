@@ -228,11 +228,11 @@ function save_customer($customer_data) {
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET firstname = ?, lastname = ?, email = ?, contact_no = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?, gender = ?';
+    $set_query = ' SET title = ?, firstname = ?, lastname = ?, email = ?, contact_no = ?, dob = ?, address = ?, city = ?, state = ?, country = ?, pincode = ?, pan_no = ?, gender = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('ssssssssssss', $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no'], $customer_data['gender']);
+    $stmt->bind_param('sssssssssssss', $customer_data['title'], $customer_data['firstname'], $customer_data['lastname'], $customer_data['email'], $customer_data['contact_no'], $customer_data['dob'], $customer_data['address'], $customer_data['city'], $customer_data['state'], $customer_data['country'], $customer_data['pincode'], $customer_data['pan_no'], $customer_data['gender']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);

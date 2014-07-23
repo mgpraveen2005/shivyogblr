@@ -185,25 +185,34 @@ $app->get("/admin", $authenticate($app), function () use ($app) {
 $app->get("/admin/registrations", $authenticate($app), function () use ($app) {
             $req = $app->request();
             $page = $req->params('pg');
-            if(!$page)
+            if (!$page)
                 $page = 1;
             $event_id = 1;
             $user_id = 0;
             $condition = '';
             if ($_SESSION['capability'] < 8) {
                 $user_id = $_SESSION['user_id'];
-                $condition = ' WHERE user_id = '.$user_id;
+                $condition = ' WHERE user_id = ' . $user_id;
             }
-            $total_records = get_total_records('`order`','id',$condition);
+            $total_records = get_total_records('`order`', 'id', $condition);
             $pagination = show_pagination('/admin/registrations', $page, $total_records);
             $orders = get_orders($event_id, $user_id, $page);
             $app->render('../templates/order_list.tpl', array('orders' => $orders, 'pagination' => $pagination));
         });
 
 $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use ($app) {
+            $flash = $app->view()->getData('flash');
+            $error = '';
+            if (isset($flash['dup_error'])) {
+                $error = $flash['dup_error'];
+                $data = $_SESSION['reg_form_data'];
+                $data['id'] = 0;
+                unset($_SESSION['reg_form_data']);
+            } else {
+                $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => '', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
+            }
             $event_id = 1;
             $category = get_record('category', ' WHERE event_id = ' . $event_id);
-            $data = array('id' => 0, 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => '', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
             if ($id) {
                 $order = get_order($id);
                 $data = $order[0];
@@ -215,7 +224,7 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                     $data['dd_date'] = date('d-m-Y', strtotime($data['dd_date']));
                 }
             }
-            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id));
+            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id, 'error' => $error));
         });
 
 $app->post("/admin/register", $authenticate($app), function () use ($app) {
@@ -226,6 +235,16 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             if (isset($data['order_id']) && $data['order_id'] > 0)
                 $is_new = 0;
 
+            if ($is_new) {
+                // Check for Customer duplication
+                $c_condition = ' WHERE firstname="' . $data['firstname'] . '" AND lastname="' . $data['lastname'] . '" AND contact_no="' . $data['contact_no'] . '"';
+                $c_exists = get_total_records('customer', 'id', $c_condition);
+                if ($c_exists) {
+                    $app->flash('dup_error', 'Duplicate Entry!! Sadhak already exists!');
+                    $_SESSION['reg_form_data'] = $data;
+                    $app->redirect('/admin/register');
+                }
+            }
             if (isset($data['dob'])) {
                 $data['dob'] = date('Y-m-d', strtotime($data['dob']));
             }
@@ -235,12 +254,12 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             }
 
             $user_id = $_SESSION['user_id'];
-            
+
             $dd_exists = '';
-            if(!isset($data['dd_id']) || $data['dd_id'] < 1){
+            if (!isset($data['dd_id']) || $data['dd_id'] < 1) {
                 $dd_exists = check_dd_exists($data);
             }
-            if($dd_exists)
+            if ($dd_exists)
                 $data['dd_id'] = $dd_exists;
             else {
                 $data['dd_id'] = save_dd_details($data);
@@ -270,7 +289,7 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             $data['payment_id'] = save_payment($payment_data);
 
             if ($is_new) {
-                $app->render('../templates/order_msg.tpl', array('data'=>$data));
+                $app->render('../templates/order_msg.tpl', array('data' => $data));
             } else {
                 $app->redirect('/admin/registrations');
             }

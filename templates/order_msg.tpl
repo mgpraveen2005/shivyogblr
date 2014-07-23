@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="/admin/register" class="ok-btn pull-right">Continue</a>
+                    <a href="/admin/register" class="ok-btn pull-right">Add Another</a>
                 </div>
             </div>
         </div>           
