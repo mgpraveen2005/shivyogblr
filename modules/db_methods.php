@@ -284,7 +284,7 @@ function get_orders($event_id, $user_id = 0, $page = 1) {
     $db = getConnection();
     $limit = 30;
     if ($page > 1) {
-        $offset = 30 * $page;
+        $offset = 30 * ($page-1);
         $limit = $offset . ', 30';
     }
     $where = ' WHERE o.event_id = ' . $event_id;
