@@ -262,7 +262,7 @@ function get_total_records($table_name, $field_name = 'id', $condition = '') {
     $db = getConnection();
     $query = 'SELECT COUNT(' . $field_name . ') AS total FROM ' . $table_name . $condition;
     $result = $db->query($query);
-    if($result){
+    if ($result) {
         $row = $result->fetch_assoc();
         return $row['total'];
     }
@@ -291,7 +291,7 @@ function get_orders($event_id, $user_id = 0, $page = 1) {
     if ($user_id)
         $where = ' AND o.user_id = ' . $user_id;
 
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' LIMIT ' . $limit;
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
     $result = $db->query($query);
     $rs = array();
     while ($row = $result->fetch_assoc()) {
@@ -338,20 +338,28 @@ function get_category($event_id) {
 
 function set_reg_no($order_id, $category_id) {
     $db = getConnection();
-    $cat_rs = get_record('category', $condition = ' WHERE id = ' . $category_id);
-    $category_data = $cat_rs[0];
 
-    $select_query = 'SELECT count(id) as counter FROM `order` WHERE category_id = ' . $category_id;
-    $result = $db->query($select_query);
-    $counter = $result->fetch_assoc();
+    $counter_query = 'UPDATE `category` SET counter = counter+1 WHERE id = ' . $category_id;
+    $db->query($counter_query);
 
-    $reg_no = $category_data['category_slug'] . '-' . $counter['counter'];
+    $category_data = get_record('category', $condition = ' WHERE id = ' . $category_id);
+
+    $reg_no = $category_data[0]['category_slug'] . '-' . $category_data[0]['counter'];
 
     $query = 'UPDATE `order` SET reg_no = ? WHERE id = ?';
     $stmt = $db->prepare($query);
     $stmt->bind_param('si', $reg_no, $order_id);
     $stmt->execute();
+
     return $reg_no;
+}
+
+function save_seat_pool($category_id, $reg_no) {
+    $db = getConnection();
+    $query = 'INSERT IGNORE INTO `seat_pool` SET category_id = ?, reg_no = ?';
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('is', $category_id, $reg_no);
+    $stmt->execute();
 }
 
 function check_dd_exists($data) {

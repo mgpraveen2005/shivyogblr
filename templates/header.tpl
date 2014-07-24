@@ -8,6 +8,4 @@
 <link rel="canonical" href=" " />
 <link rel="shortcut icon" href="/less/img/favicon.ico" type="image/x-icon"/>
 
-<!--(if target dist)>
-    <link rel="stylesheet" href="/less/production/desktop.{{rlsdate}}.min.css" type="text/css" />
-<!(endif)-->
+{include file='production/css.tpl'}

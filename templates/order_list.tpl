@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>Registrations | Shivyog Bangalore</title>
-        {include file='production/header.tpl'}
+        {include file='header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
@@ -42,7 +42,15 @@
                                     <td>{$order['category_name']}</td>
                                     <td>{$order['reg_no']}</td>
                                     <td>{$order['display_name']}</td>
-                                    <td><a href="/admin/register/{$order['id']}">Edit</a></td>
+                                    <td>
+                                        <a href="/admin/register/{$order['id']}">
+                                            {if $capability > 5}
+                                                Edit
+                                            {else}
+                                                View
+                                            {/if}
+                                        </a>
+                                    </td>
                                 </tr>
                             {/foreach}
                         </tbody>
@@ -50,6 +58,6 @@
                 </div>
             </div>
         </div>           
-        {include file='production/footer.tpl'}            
+        {include file='footer.tpl'}
     </body>
 </html>

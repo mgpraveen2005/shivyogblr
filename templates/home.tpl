@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>{$title} | Shivyog Bangalore</title>
-        {include file='production/header.tpl'}
+        {include file='header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
@@ -16,6 +16,6 @@
                 {include file='right-rail.tpl'}
             </div>
         </div>           
-        {include file='production/footer.tpl'}            
+        {include file='footer.tpl'}
     </body>
 </html>

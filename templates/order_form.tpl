@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>{$pagetitle}</title>
-        {include file='production/header.tpl'}
+        {include file='header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
@@ -67,7 +67,7 @@
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>Title: </label></div>
                                     <div class="lbl_last">
-                                        <select name="title" id="title">
+                                        <select name="title" id="title" class="js_title">
                                             <option value="Mr." {if ($order.title == "Mr.")}selected{/if} >Mr.</option>
                                             <option value="Ms." {if ($order.title == "Ms.")}selected{/if} >Ms.</option>
                                             <option value="Dr." {if ($order.title == "Dr.")}selected{/if} >Dr.</option>
@@ -125,7 +125,13 @@
                             </div>
                         </div>
                         <div style="text-align:center;">
-                            <button class="ok-btn js_save">Submit</button>
+                            {if !$order.id}
+                                <button class="ok-btn js_save">Submit</button>
+                            {else}
+                                {if $capability > 5}
+                                    <button class="ok-btn js_save">Update</button>
+                                {/if}
+                            {/if}
                             <a href="/admin/registrations" class="cancel-btn">Back</a>
                             {if !$order.id}
                                 <button type="reset" class="cancel-btn">Clear</button>
@@ -135,6 +141,6 @@
                 </div>
             </div>
         </div>           
-        {include file='production/footer.tpl'}            
+        {include file='footer.tpl'}
     </body>
 </html>

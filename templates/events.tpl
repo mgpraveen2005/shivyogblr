@@ -1,10 +1,10 @@
 <html>
     <head>
         <title>{$pagetitle}</title>
-        {include file='desktop/production/header.tpl'}
+        {include file='header.tpl'}
     </head>
     <body>
-        {include file='desktop/navbar.tpl'}
+        {include file='navbar.tpl'}
         <div class="container content-wrap">
             <div class="col-md-12 white-box">
                 <h1>Dashboard</h1>                
@@ -12,6 +12,6 @@
                 </div>
             </div>
         </div>           
-        {include file='desktop/production/footer.tpl'}            
+        {include file='footer.tpl'}
     </body>
 </html>

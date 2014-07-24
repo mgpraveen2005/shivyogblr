@@ -61,8 +61,8 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    'templates/production/header.tpl': 'templates/header.tpl',
-                    'templates/production/footer.tpl': 'templates/footer.tpl'
+                    'templates/production/css.tpl': 'templates/css.tpl',
+                    'templates/production/js.tpl': 'templates/js.tpl'
                 }
             }
         }

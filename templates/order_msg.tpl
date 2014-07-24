@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>{$pagetitle}</title>
-        {include file='production/header.tpl'}
+        {include file='header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
@@ -33,6 +33,6 @@
                 </div>
             </div>
         </div>           
-        {include file='production/footer.tpl'}            
+        {include file='footer.tpl'}
     </body>
 </html>

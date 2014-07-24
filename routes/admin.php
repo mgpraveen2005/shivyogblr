@@ -175,7 +175,7 @@ $app->post("/admin/group", $authenticate($app), function () use ($app) {
         });
 
 $app->get("/admin", $authenticate($app), function () use ($app) {
-            if ($_SESSION['capability'] < 8) {
+            if ($_SESSION['capability'] < 7) {
                 $app->redirect('/admin/registrations');
             } else {
                 $app->render('../templates/admin.tpl');
@@ -190,7 +190,7 @@ $app->get("/admin/registrations", $authenticate($app), function () use ($app) {
             $event_id = 1;
             $user_id = 0;
             $condition = '';
-            if ($_SESSION['capability'] < 8) {
+            if ($_SESSION['capability'] < 6) {
                 $user_id = $_SESSION['user_id'];
                 $condition = ' WHERE user_id = ' . $user_id;
             }
@@ -230,10 +230,12 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
 $app->post("/admin/register", $authenticate($app), function () use ($app) {
             $req = $app->request();
             $data = $req->params();
-
+            $set_seat = 1;
             $is_new = 1;
-            if (isset($data['order_id']) && $data['order_id'] > 0)
+            if (isset($data['order_id']) && $data['order_id'] > 0) {
                 $is_new = 0;
+                $set_seat = 0;
+            }
 
             if ($is_new) {
                 // Check for Customer duplication
@@ -244,7 +246,14 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
                     $_SESSION['reg_form_data'] = $data;
                     $app->redirect('/admin/register');
                 }
+            } else {
+                $order_old = get_record('`order`', ' WHERE id = ' . $data['order_id']);
+                if ($order_old[0]['category_id'] != $data['category_id']) {
+                    save_seat_pool($order_old[0]['category_id'], $order_old[0]['reg_no']);
+                    $set_seat = 1;
+                }
             }
+
             if (isset($data['dob'])) {
                 $data['dob'] = date('Y-m-d', strtotime($data['dob']));
             }
@@ -279,7 +288,7 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             $order_data['user_id'] = $user_id;
             $data['order_id'] = save_order($order_data);
 
-            if ($is_new) {
+            if ($set_seat) {
                 $data['reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
             }
 
@@ -288,7 +297,7 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             $payment_data['amount'] = $category_data[0]['amount'];
             $data['payment_id'] = save_payment($payment_data);
 
-            if ($is_new) {
+            if ($set_seat) {
                 $app->render('../templates/order_msg.tpl', array('data' => $data));
             } else {
                 $app->redirect('/admin/registrations');

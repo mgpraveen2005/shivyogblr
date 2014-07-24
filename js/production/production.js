@@ -1141,35 +1141,7 @@
 
 }(jQuery);
 
-// FB Comments
-
-(function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id))
-                return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=305340076146905&version=v2.0";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-        
-        
-//Twitter Embed        
-        !function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-            if (!d.getElementById(id)) {
-                js = d.createElement(s);
-                js.id = id;
-                js.src = p + '://platform.twitter.com/widgets.js';
-                fjs.parentNode.insertBefore(js, fjs);
-            }
-        }(document, 'script', 'twitter-wjs');
-
 $(document).ready(function() {
-    $("img").unveil();
-    /*$('body').click(function(){
-     jQuery.sidr('close', 'sidr'); 
-     });*/
     //Add Hover effect to menus
     $('ul.nav li.dropdown').hover(function() {
         $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn();
@@ -1180,7 +1152,14 @@ $(document).ready(function() {
     $('.sy_date').datepicker();
 
     if ($('#js_reg_form').length) {
-        $('#js_reg_form').on('click', '.js_save', function(c) {
+        $('#js_reg_form').on('change','.js_title', function(){
+            var title = $(this).val();
+            if(title == "Ms."){
+                jQuery("input:radio[value=F]").prop("checked", true);
+            } else if(title == "Mr.") {
+                jQuery("input:radio[value=M]").prop("checked", true);
+            }
+        }).on('click', '.js_save', function(c) {
             c.preventDefault();
             jQuery("input, select").css('background', '#FFFFFF');
             if (jQuery.trim(jQuery("#dd_number").val()).length < 1) {
@@ -1202,6 +1181,12 @@ $(document).ready(function() {
             if (jQuery.trim(jQuery("#dd_date").val()).length < 1) {
                 jQuery("#dd_date").css('background', '#F7BE81').focus();
                 return false;
+            }
+            var d = jQuery("#title").val();
+            var a = jQuery("input:radio[name=gender]:checked").val();
+            if ((d == "Mr." && a == "F") || (d == "Ms." && a == "M")) {
+                alert("Title and Gender mismatch");
+                return false
             }
             if (jQuery.trim(jQuery("#firstname").val()).length < 1) {
                 jQuery("#firstname").css('background', '#F7BE81').focus();
@@ -1248,15 +1233,15 @@ $(document).ready(function() {
                 return false;
             }
             var cat_amt = jQuery("#category_id").find(':selected').data('amt');
-            if(jQuery("#dd_amount").val() < parseInt(cat_amt)){
+            if (jQuery("#dd_amount").val() < parseInt(cat_amt)) {
                 jQuery("#dd_amount").css('background', '#F7BE81').focus();
                 alert("DD Amount is less than the Category");
                 return false;
             }
-            if(jQuery("#dd_amount").val() > (parseInt(cat_amt) + 100)){
+            if (jQuery("#dd_amount").val() > (parseInt(cat_amt) + 100)) {
                 jQuery("#dd_amount").css('background', '#F7BE81').focus();
                 var r = confirm("DD Amount appears to be much higher than Category! Press OK to continue submission!");
-                if(r == false)
+                if (r == false)
                     return false;
             }
             jQuery("#js_reg_form").trigger("submit");
@@ -1264,206 +1249,3 @@ $(document).ready(function() {
     }
 
 });
-$(document).ready(function() {
-    $(document).on('click', '.js_ga-tracking', function(e) {
-        var track_label, track_action, track_category;
-        track_label = $(this).data('track');
-        track_action = $(this).data('track_action');
-        track_category = $(this).data('track_category');
-        ga_track_event(track_category, track_action, track_label);
-    });
-});
-
-
-/* ga Tracking of user actions */
-function ga_track_event(category, action, label, value, non_interaction) {
-    if (typeof ga !== 'undefined') {
-        if (label == '') {
-            //_gaq.push(['_trackEvent', category, action]);
-            ga('send', {
-                'hitType': 'event', // Required.
-                'eventCategory': category, // Required.
-                'eventAction': action // Required.
-            });            
-            
-        } else {
-            if (typeof label === 'number')
-                label = '' + label;
-            if (typeof value === 'undefined')
-                value = null;
-            if (typeof non_interaction === 'undefined')
-                non_interaction = false;
-
-            ga('send', {
-                'hitType': 'event', // Required.
-                'eventCategory': category, // Required.
-                'eventAction': action, // Required.
-                'eventLabel': label,
-                'eventValue': value,
-                'non_interaction':non_interaction
-            });
-
-            //_gaq.push(['_trackEvent', category, action, label, value, non_interaction]);
-        }
-    }
-}
-// get the shares count, and the callback thing
-var _sharecb = function(){};
-_sharecb.shares = 0;
-_sharecb.sharesset = function(){};
-_sharecb.fb = function(){
-    _sharecb.shares += parseInt(arguments[0].data[0].total_count);
-    _sharecb.sharesset();
-}
-_sharecb.twit = function(){
-    _sharecb.shares += parseInt(arguments[0].count);
-    _sharecb.sharesset();
-}
-_sharecb.overallcount = function(){
-    var str = arguments[0];
-    _sharecb.shares = 0;
-    for (var key in str){
-        var value;
-        if (key == "Facebook")
-            value = str[key]["total_count"];
-        else
-            value = str[key];
-
-        value = parseInt(value);
-        if (value > 0)
-            _sharecb.shares += value;
-    }
-    _sharecb.sharesset();
-}
-
-
-
-$(document).ready(function() {
-    
-	$(document).on('click', '.js_share-btn', function(event) {
-        var width,
-                height,
-                url,
-                shareurl ="http://www.sportskeeda.com" + document.location.pathname;
-    var pagetitle = document.title.split(' | ')[0];
-        switch ($(this).data('share-type')) {
-            case 'twitter':
-                width = 600;
-                height = 300;
-                url = "https://twitter.com/share?url="+shareurl+"&text="+encodeURIComponent(pagetitle)+"&related=sportskeeda&counturl="+shareurl;
-                break;
-            case 'fb':
-                width = 600;
-                height = 400;
-                url = "https://facebook.com/sharer/sharer.php?u="+shareurl;
-                break;
-            case 'gplus':
-                url = "https://plus.google.com/share?url="+shareurl;
-                width = 515;
-                height = 400;
-                break;
-            case 'stumbleupon':
-                url = "http://www.stumbleupon.com/submit?url="+shareurl;
-                width = 800;
-                height = 500;
-                break;
-            case 'reddit':
-                url = "http://www.reddit.com/submit?url=" + shareurl;
-                width = 800;
-                height = 500;
-                break;                
-            case 'mail':
-                url = "mailto:?subject=sportskeeda.com - "+encodeURIComponent(pagetitle) + "&body="+shareurl;
-                width = 800;
-                height = 500;
-        }
-        var left = ($(window).width()) / 2,
-                top = ($(window).height()) / 2,
-                opts = 'status=1' +
-                ',width=' + width +
-                ',height=' + height +
-                ',top=' + top +
-                ',left=' + left;
-
-        window.open(url, $(this).data('share-type'), opts);
-
-        return false;
-    });
-    // track fb events
-    
-    window.fbAsyncInit = function(){
-    // share
-    FB.Event.subscribe('message.send', function() {
-        ga_track_event("Share_btn", "Click", "FB");
-    });
-    
-    // like
-    FB.Event.subscribe('edge.create', function() {
-        ga_track_event("Like_btn", "Click", "FB");
-    });
-    };  
-    
-    
-    
-    // get the share counts and set the respective callback
-    (function(){
-        var url = "http://www.sportskeeda.com" + document.location.pathname+"/";
-        var api_urls = [
-            'http://urls.api.twitter.com/1/urls/count.json?url='+url+'&callback=_sharecb.twit',
-            'https://graph.facebook.com/fql?q=SELECT%20total_count%20FROM%20link_stat%20WHERE%20url%20=%20"'+url+'"&callback=_sharecb.fb'
-            //'http://api.sharedcount.com/?url='+url+'&callback=_sharecb.overallcount'
-                ];
-
-        for(i = 0; i< api_urls.length; i++){
-            $("body").append("<script src="+api_urls[i]+"></script>");
-        }
-    })();
-
-    _sharecb.sharesset = function(){
-        var visible_share_text = _sharecb.shares;
-        if (_sharecb.shares > 5)
-            $(".js_total-share-count").show();
-
-        if (_sharecb.shares > 1000){
-            // round off to nearest hundred and show it
-            visible_share_text = Math.ceil(_sharecb.shares/100) / 10 + "K";
-        }
-
-        $(".js_total-share-count").html(visible_share_text);
-    }    
-});
-$(document).ready(function() {
-    
-
-  /*  $(".mobi-container").dragend({
-        onSwipeStart: function() {
-            var NextUrl = $("#swipe-btn").attr("data-url");
-            window.location.href = NextUrl;
-        },
-        direction: "horizontal",
-        borderBetweenPages: "0"
-
-    });*/
-
-  /*  var offsets = $('.widget-redbull').offset();
-    var bottom = offsets.top;
-
-    $(window).scroll(function() {
-
-        var offset = bottom;
-
-        alert("offset " + $(this).scrollTop());
-
-        if ($(this).scrollTop() > offset && close) {
-            $('.swipe-btn').show(100);
-            //alert("show");
-        }
-        else {
-            $('.swipe-btn').hide(100);
-            //alert("hide");
-        }
-
-    });*/
-
-});
-

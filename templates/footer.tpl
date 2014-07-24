@@ -10,7 +10,4 @@
 </footer>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<!--(if target dist)>
-    <script type="text/javascript" src="/js/production/desktop.{{rlsdate}}.min.js"></script>
-<!(endif)-->
-
+{include file='production/js.tpl'}
