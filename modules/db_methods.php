@@ -133,14 +133,14 @@ function save_order($order_data) {
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `order`';
-        $where = ', created_date = NOW()';
+        $where = ', created_date = NOW(), user_id = '.$order_data['user_id'];
         $get_id = 1;
     }
-    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?, user_id = ?';
+    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('iiii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id'], $order_data['user_id']);
+    $stmt->bind_param('iii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
