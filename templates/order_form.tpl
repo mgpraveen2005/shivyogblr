@@ -136,7 +136,7 @@
                             {if !$order.id}
                                 <button type="reset" class="cancel-btn">Clear</button>
                             {/if}
-                        </div>                            
+                        </div>
                     </form>
                 </div>
             </div>

@@ -38,5 +38,6 @@ $app->error(function (\Exception $e) use ($app) {
 
 include_once 'routes/homepage.php';
 include_once 'routes/admin.php';
+include_once 'routes/reports.php';
 
 $app->run();

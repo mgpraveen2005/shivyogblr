@@ -133,7 +133,7 @@ function save_order($order_data) {
         $get_id = 0;
     } else {
         $query = 'INSERT INTO `order`';
-        $where = ', created_date = NOW(), user_id = '.$order_data['user_id'];
+        $where = ', created_date = NOW(), user_id = ' . $order_data['user_id'];
         $get_id = 1;
     }
     $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?';
@@ -284,18 +284,20 @@ function get_orders($event_id, $user_id = 0, $page = 1) {
     $db = getConnection();
     $limit = 30;
     if ($page > 1) {
-        $offset = 30 * ($page-1);
+        $offset = 30 * ($page - 1);
         $limit = $offset . ', 30';
     }
     $where = ' WHERE o.event_id = ' . $event_id;
     if ($user_id)
-        $where = ' AND o.user_id = ' . $user_id;
+        $where .= ' AND o.user_id = ' . $user_id;
 
     $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
     $result = $db->query($query);
     $rs = array();
-    while ($row = $result->fetch_assoc()) {
-        $rs[] = $row;
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $rs[] = $row;
+        }
     }
     return $rs;
 }
@@ -371,3 +373,17 @@ function check_dd_exists($data) {
     return FALSE;
 }
 
+function get_orders_report($data) {
+    $db = getConnection();
+    $where = ' WHERE o.event_id = ' . $data['event_id'];
+
+    $query = 'SELECT o.`id` AS ID, o.`reg_no` AS `Reg No`, CONCAT(c.`firstname`, " ", c.`lastname`) AS `Name`, c.`contact_no` AS `Mobile No`, c.`email` AS Email, ct.`category_name` AS `Category`, DATE(o.`created_date`) AS `Date`, TIME(o.`created_date`) AS `Time`,dd.`dd_amount` AS `DD Amount`, dd.`dd_number` AS `DD No`, dd.`dd_bank` AS `Bank`, dd.`dd_date` AS `DD Date`, u.`display_name` AS `Reg Center` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` INNER JOIN payment p ON o.`id` = p.`order_id` LEFT JOIN dd_details dd ON p.`dd_id` = dd.`id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' ORDER BY o.`id` DESC';
+    $result = $db->query($query);
+    $rs = array();
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $rs[] = $row;
+        }
+    }
+    return $rs;
+}
