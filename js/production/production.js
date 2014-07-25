@@ -1214,12 +1214,6 @@ $(document).ready(function() {
                 alert("DD Number must be 6 digit numerical");
                 return false;
             }
-            var pan_num = jQuery("#pan_no").val();
-            if (!pan_num.match('^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]$')) {
-                jQuery("#pan_no").css('background', '#F7BE81').focus();
-                alert("PAN No must match the pattern 5 Letters, 4 Numbers, then 1 Letter");
-                return false;
-            }
             var pincode = jQuery("#pincode").val();
             if (!pincode.match('^[0-9]*$')) {
                 jQuery("#pincode").css('background', '#F7BE81').focus();

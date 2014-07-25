@@ -51,7 +51,7 @@
                                     </div>
                                 </div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>PAN Card No <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="pan_no" id="pan_no" value="{$order.pan_no}" required /></div>
+                                    <div class="lbl_first"><label>PAN Card No </label></div><div class="lbl_last"><input type="text" name="pan_no" id="pan_no" value="{$order.pan_no}" /></div>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                                     </div>
                                 {/if}
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>Title: </label></div>
+                                    <div class="lbl_first"><label>Title </label></div>
                                     <div class="lbl_last">
                                         <select name="title" id="title" class="js_title">
                                             <option value="Mr." {if ($order.title == "Mr.")}selected{/if} >Mr.</option>

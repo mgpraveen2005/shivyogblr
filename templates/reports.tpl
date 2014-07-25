@@ -33,6 +33,7 @@
                         </div>
                         <div style="text-align:center;">
                             <button class="ok-btn">Export</button>
+                            <p class="sy_error">{$error}</p>
                         </div>
                     </form>
                 </div>

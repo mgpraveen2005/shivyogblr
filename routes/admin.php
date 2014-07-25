@@ -209,7 +209,7 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                 $data['id'] = 0;
                 unset($_SESSION['reg_form_data']);
             } else {
-                $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => '', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
+                $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => 'India', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
             }
             $event_id = 1;
             $category = get_record('category', ' WHERE event_id = ' . $event_id);
