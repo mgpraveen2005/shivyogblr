@@ -56,38 +56,23 @@ $app->get("/admin/login", function () use ($app) {
                 $urlRedirect = $_SESSION['urlRedirect'];
             }
 
-            $email_value = $email_error = $password_error = '';
-
-            if (isset($flash['email'])) {
-                $email_value = $flash['email'];
-            }
-
-            if (isset($flash['errors']['email'])) {
-                $email_error = $flash['errors']['email'];
-            }
-
-            if (isset($flash['errors']['password'])) {
-                $password_error = $flash['errors']['password'];
-            }
-
-            $app->render('../templates/login.tpl', array('error' => $error, 'email_value' => $email_value, 'email_error' => $email_error, 'password_error' => $password_error, 'urlRedirect' => $urlRedirect));
+            $app->render('../templates/login.tpl', array('error' => $error, 'urlRedirect' => $urlRedirect));
         });
 
 $app->post("/admin/login", function () use ($app) {
             $email = $app->request()->post('email');
             $password = $app->request()->post('password');
-
-            $errors = array();
-
             $user_data = admin_login($email, $password);
+
+            $error = '';
             if (!$user_data) {
-                $app->flash('email', $email);
-                $errors['email'] = "Email is not found.";
-                $errors['password'] = "Password does not match.";
+                $error = 'Email and Password mismatch!';
+            } else if(!$user_data['is_enabled']) {
+                $error = 'Account has been disabled!';
             }
 
-            if (count($errors) > 0) {
-                $app->flash('errors', $errors);
+            if ($error) {
+                $app->flash('error', $error);
                 $app->redirect('/admin/login');
             }
 
@@ -122,7 +107,7 @@ $app->get("/admin/user(/:id)", $authenticate($app), function ($id = 0) use ($app
                 }
                 $edit_disable = 'disabled';
             }
-            $data = array('id' => '', 'email' => '', 'display_name' => '', 'group_id' => '');
+            $data = array('id' => '', 'email' => '', 'display_name' => '', 'group_id' => '', 'is_enabled' => 1);
             $groups = get_record('user_group', ' ORDER BY capability');
             if ($id) {
                 $users = get_record('user', ' WHERE id = ' . $id);
@@ -139,6 +124,11 @@ $app->post("/admin/user", $authenticate($app), function () use ($app) {
             $data['group_id'] = $app->request()->post('group_id');
             $data['password'] = $app->request()->post('password');
             $confirm_password = $app->request()->post('confirm_password');
+
+            $data['is_enabled'] = $app->request()->post('is_enabled');
+            if(is_null($data['is_enabled']))
+                $data['is_enabled'] = 0;
+
             if ($data['password'] == $confirm_password) {
                 $user_id = save_user($data);
             }

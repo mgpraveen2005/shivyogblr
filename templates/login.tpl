@@ -11,14 +11,13 @@
                 <h1>Please Login here!</h1>                
                 <div class="col-xs-12 article-content">
                     {if !empty($error)}
-                        <p class="error">{$error}</p>
-                        <span class="error">{$password_error}</span>
+                        <p class="sy_error">{$error}</p>
                     {/if}
                     <form action="/admin/login" method="POST">
                         <table class="table-form">
                             <tr>
                                 <th>Email: </th>
-                                <td><input type="text" name="email" id="email" value="{$email_value}" /></td>
+                                <td><input type="text" name="email" id="email" value="" /></td>
                             </tr>
                             <tr>
                                 <th>Password: </th>

@@ -64,6 +64,12 @@
                                 <th>Confirm Password : </th>
                                 <td><input type="password" name='confirm_password'/></td>
                             </tr>
+                            {if ($data['id'] != $user) && ($capability > 7)}
+                            <tr>
+                                <th>Enabled : </th>
+                                <td><input type="checkbox" name="is_enabled" value="1" {if $data['is_enabled']}checked{/if}/></td>
+                            </tr>
+                            {/if}
                             <tr>
                                 <td><button class="ok-btn">Save</button></td>
                                 <td><a href="/admin/users" class="cancel-btn">Cancel</a></td>

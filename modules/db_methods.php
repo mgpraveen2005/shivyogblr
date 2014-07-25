@@ -3,7 +3,7 @@
 function admin_login($email, $password) {
     $db = getConnection();
     $pass_code = sha1($password);
-    $query = 'SELECT id, email, display_name, group_id FROM `user` WHERE `email`= ? AND `password`= ?';
+    $query = 'SELECT id, email, display_name, group_id, is_enabled FROM `user` WHERE `email`= ? AND `password`= ?';
     $stmt = $db->prepare($query);
     $stmt->bind_param('ss', $email, $pass_code);
     $stmt->execute();
@@ -42,13 +42,13 @@ function save_user($user_data) {
         $where = ', created_date = NOW()';
         $get_id = 1;
     }
-    $set_query = ' SET email = ?, display_name = ?, group_id = ?';
+    $set_query = ' SET email = ?, display_name = ?, group_id = ?, is_enabled = ?';
     if (isset($user_data['password']) && !empty($user_data['password'])) {
         $set_query .= ', `password` = "' . sha1($user_data['password']) . '"';
     }
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('ssi', $user_data['email'], $user_data['display_name'], $user_data['group_id']);
+    $stmt->bind_param('ssii', $user_data['email'], $user_data['display_name'], $user_data['group_id'], $user_data['is_enabled']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
