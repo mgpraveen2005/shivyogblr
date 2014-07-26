@@ -1151,12 +1151,22 @@ $(document).ready(function() {
 
     $('.sy_date').datepicker();
 
+    $('.sy_date').on('changeDate', function(ev) {
+        if (ev.viewMode === 'days') {
+            $('.datepicker.dropdown-menu').hide();
+        }
+    }).on('keydown', function(event) {
+        if (event.which == 9) {
+            $('.datepicker.dropdown-menu').hide();
+        }
+    });
+
     if ($('#js_reg_form').length) {
-        $('#js_reg_form').on('change','.js_title', function(){
+        $('#js_reg_form').on('change', '.js_title', function() {
             var title = $(this).val();
-            if(title == "Ms."){
+            if (title == "Ms.") {
                 jQuery("input:radio[value=F]").prop("checked", true);
-            } else if(title == "Mr.") {
+            } else if (title == "Mr.") {
                 jQuery("input:radio[value=M]").prop("checked", true);
             }
         }).on('click', '.js_save', function(c) {
@@ -1186,7 +1196,7 @@ $(document).ready(function() {
             var a = jQuery("input:radio[name=gender]:checked").val();
             if ((d == "Mr." && a == "F") || (d == "Ms." && a == "M")) {
                 alert("Title and Gender mismatch");
-                return false
+                return false;
             }
             if (jQuery.trim(jQuery("#firstname").val()).length < 1) {
                 jQuery("#firstname").css('background', '#F7BE81').focus();
@@ -1194,6 +1204,12 @@ $(document).ready(function() {
             }
             if (jQuery.trim(jQuery("#contact_no").val()).length < 1) {
                 jQuery("#contact_no").css('background', '#F7BE81').focus();
+                return false;
+            }
+            var mobile = jQuery("#contact_no").val();
+            if (!mobile.match('^[0-9]*$')) {
+                jQuery("#contact_no").css('background', '#F7BE81').focus();
+                alert("Only numbers allowed for Mobile No");
                 return false;
             }
             if (jQuery.trim(jQuery("#city").val()).length < 1) {
@@ -1204,26 +1220,10 @@ $(document).ready(function() {
                 jQuery("#country").css('background', '#F7BE81').focus();
                 return false;
             }
-            if (jQuery.trim(jQuery("#dob").val()).length < 1) {
-                jQuery("#dob").css('background', '#F7BE81').focus();
-                return false;
-            }
             var dd_num = jQuery("#dd_number").val();
             if (!dd_num.match('^[0-9]{6}$')) {
                 jQuery("#dd_number").css('background', '#F7BE81').focus();
                 alert("DD Number must be 6 digit numerical");
-                return false;
-            }
-            var pincode = jQuery("#pincode").val();
-            if (!pincode.match('^[0-9]*$')) {
-                jQuery("#pincode").css('background', '#F7BE81').focus();
-                alert("Only numbers allowed for PIN Code");
-                return false;
-            }
-            var mobile = jQuery("#contact_no").val();
-            if (!mobile.match('^[0-9]*$')) {
-                jQuery("#contact_no").css('background', '#F7BE81').focus();
-                alert("Only numbers allowed for Mobile No");
                 return false;
             }
             var cat_amt = jQuery("#category_id").find(':selected').data('amt');

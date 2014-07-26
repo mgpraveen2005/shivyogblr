@@ -64,8 +64,10 @@
                                         <div class="lbl_first"><label>Registration No: </label></div><div class="lbl_last"><strong>{$order.reg_no}</strong></div>
                                     </div>
                                 {/if}
+                            </div>
+                            <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>Title </label></div>
+                                    <div class="lbl_first"><label>Title <i class="star"></i></label></div>
                                     <div class="lbl_last">
                                         <select name="title" id="title" class="js_title">
                                             <option value="Mr." {if ($order.title == "Mr.")}selected{/if} >Mr.</option>
@@ -73,6 +75,9 @@
                                             <option value="Dr." {if ($order.title == "Dr.")}selected{/if} >Dr.</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>Gender <i class="star"></i></label></div><div class="lbl_last"><input type="radio" name="gender" value="M" {if ($order.gender == 'M')}checked{/if} />Male &nbsp;&nbsp;&nbsp;<input type="radio" name="gender" value="F" {if ($order.gender == 'F')}checked{/if}/>Female</div>
                                 </div>
                             </div>
                             <div>
@@ -88,39 +93,34 @@
                             </div>
                             <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>Date of Birth <i class="star"></i></label></div><div class="lbl_last"><input type="text" class="sy_date" name="dob" id="dob" data-date-format="dd-mm-yyyy"  value="{$order.dob}" placeholder="DD-MM-YYYY" title="DD-MM-YYYY" required /></div>
-                                </div>
-                                <div class="flow_elements">
-                                    <div class="lbl_first"><label>Gender <i class="star"></i></label></div><div class="lbl_last"><input type="radio" name="gender" value="M" {if ($order.gender == 'M')}checked{/if} />Male &nbsp;&nbsp;&nbsp;<input type="radio" name="gender" value="F" {if ($order.gender == 'F')}checked{/if}/>Female</div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flow_elements">
                                     <div class="lbl_first"><label>Mobile No. <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="contact_no" id="contact_no"  value="{$order.contact_no}" required /></div>
                                 </div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>Email ID <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="email" id="email"  value="{$order.email}" required/></div>
+                                    <div class="lbl_first"><label>Email ID </label></div><div class="lbl_last"><input type="text" name="email" id="email"  value="{$order.email}" /></div>
                                 </div>
                             </div>
                             <div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>Date of Birth </label></div><div class="lbl_last"><input type="text" class="sy_date" name="dob" id="dob" data-date-format="dd-mm-yyyy"  value="{$order.dob}" placeholder="DD-MM-YYYY" title="DD-MM-YYYY" /></div>
+                                </div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>Country <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="country" id="country"  value="{$order.country}"  required/></div>
                                 </div>
-                                <div class="flow_elements">
-                                    <div class="lbl_first"><label>City <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="city" id="city"  value="{$order.city}"  required/></div>
-                                </div>
                             </div>
                             <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>State </label></div><div class="lbl_last"><input type="text" name="state" id="state"  value="{$order.state}" /></div>
+                                    <div class="lbl_first"><label>City <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="city" id="city"  value="{$order.city}"  required/></div>
                                 </div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>PIN Code <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="pincode" id="pincode"  value="{$order.pincode}" required /></div>
+                                    <div class="lbl_first"><label>State </label></div><div class="lbl_last"><input type="text" name="state" id="state"  value="{$order.state}" /></div>
                                 </div>
                             </div>
                             <div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>Address </label></div><div class="lbl_last"><input type="text" name="address" id="address"  value="{$order.address}" /></div>
+                                </div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>PIN Code </label></div><div class="lbl_last"><input type="text" name="pincode" id="pincode"  value="{$order.pincode}" /></div>
                                 </div>
                             </div>
                         </div>
