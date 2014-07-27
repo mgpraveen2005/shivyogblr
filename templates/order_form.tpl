@@ -16,7 +16,7 @@
                             <h5 class="block-title">Donation Details:</h5>
                             <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>DD Number <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_number" id="dd_number" value="{$order.dd_number}" required/></div>
+                                    <div class="lbl_first"><label>DD Number <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_number" id="dd_number" value="{$order.dd_number}" required autofocus="autofocus" /></div>
                                     <input type="hidden" name="dd_id" value="{$order.dd_id}" />
                                     <input type="hidden" name="payment_type" value="dd" />
                                 </div>

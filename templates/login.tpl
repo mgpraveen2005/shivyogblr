@@ -17,7 +17,7 @@
                         <table class="table-form">
                             <tr>
                                 <th>Email: </th>
-                                <td><input type="text" name="email" id="email" value="" /></td>
+                                <td><input type="text" name="email" id="email" value="" autofocus="autofocus" /></td>
                             </tr>
                             <tr>
                                 <th>Password: </th>
