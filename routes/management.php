@@ -73,11 +73,42 @@ $app->post("/admin/group", $authenticate($app), function () use ($app) {
             $app->redirect('/admin/groups');
         });
 
-
-$app->get("/admin/events(/:page)", $authenticate($app), function ($page = 0) use ($app) {
-            $app->render('../templates/events.tpl');
+$app->get("/admin/events", $authenticate($app), function () use ($app) {
+            $events = get_record('event');
+            foreach ($events as &$event_type) {
+                if ($event_type["event_type"])
+                    $event_type["event_type"] = 'Paid';
+                else
+                    $event_type["event_type"] = 'Free';
+            }
+            $app->render('../templates/desktop/events.tpl', array('events' => $events));
         });
 
 $app->get("/admin/event(/:id)", $authenticate($app), function ($id = 0) use ($app) {
-            $app->render('../templates/event_form.tpl');
+            $data = array('id' => '', 'event_name' => '', 'start_date' => '', 'end_date' => '', 'event_type' => '', 'event_slug' => '', 'venue' => '', 'address' => '', 'city' => '', 'country' => '');
+            $category = array();
+            if ($id) {
+                $events = get_record('event', ' WHERE id = ' . $id);
+                $data = $events[0];
+                $category = get_record('category', ' WHERE event_id = ' . $id);
+            }
+            $app->render('../templates/desktop/event_form.tpl', array('data' => $data, 'category' => $category));
+        });
+
+$app->post("/admin/event", $authenticate($app), function () use ($app) {
+            $data = array();
+            $data['event_id'] = $app->request()->post('event_id');
+            $data['event_name'] = $app->request()->post('event_name');
+            $data['start_date'] = $app->request()->post('start_date');
+            $data['end_date'] = $app->request()->post('end_date');
+            $data['event_type'] = $app->request()->post('event_type');
+            $data['event_slug'] = $app->request()->post('event_slug');
+            $data['venue'] = $app->request()->post('venue');
+            $data['address'] = $app->request()->post('address');
+            $data['city'] = $app->request()->post('city');
+            $data['country'] = $app->request()->post('country');
+            $data['user_id'] = $_SESSION['user_id'];
+            $event_id = save_event($data);
+
+            $app->redirect('/admin/events');
         });
