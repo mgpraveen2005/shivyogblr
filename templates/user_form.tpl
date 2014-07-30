@@ -65,10 +65,12 @@
                                 <td><input type="password" name='confirm_password'/></td>
                             </tr>
                             {if ($data['id'] != $user) && ($capability > 7)}
-                            <tr>
-                                <th>Enabled : </th>
-                                <td><input type="checkbox" name="is_enabled" value="1" {if $data['is_enabled']}checked{/if}/></td>
-                            </tr>
+                                <tr>
+                                    <th>Enabled : </th>
+                                    <td><input type="checkbox" name="is_enabled" value="1" {if $data['is_enabled']}checked{/if}/></td>
+                                </tr>
+                            {else}
+                                <input type="hidden" name="is_enabled" value="1"/>
                             {/if}
                             <tr>
                                 <td><button class="ok-btn">Save</button></td>

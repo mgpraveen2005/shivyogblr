@@ -39,5 +39,8 @@ $app->error(function (\Exception $e) use ($app) {
 include_once 'routes/homepage.php';
 include_once 'routes/admin.php';
 include_once 'routes/reports.php';
+include_once 'routes/orders.php';
+include_once 'routes/management.php';
+include_once 'routes/ajax.php';
 
 $app->run();

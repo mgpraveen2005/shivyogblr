@@ -17,44 +17,18 @@
             <div class="col-md-12 white-box">
                 <h1>Registrations</h1>
                 <div class="col-xs-12 article-content">
+                    <fieldset id="js_src_box">
+                        <legend>Search</legend>
+                        <input type="text" placeholder="Name" id="js_src_name" />
+                        <input type="text" placeholder="Email" id="js_src_email" />
+                        <input type="text" placeholder="Mobile" id="js_src_mobile" />
+                        <input type="text" placeholder="Reg No" id="js_src_reg_no" />
+                        <button class="cancel-btn js_src_find">Find</button>
+                        <div id="js_src_results"></div>
+                    </fieldset>
                     {$pagination}
                     <a href="/admin/register" class="ok-btn">Add</a><br>
-                    <table class="table-list">
-                        <thead>
-                            <tr>
-                                <td>Reg-Date</td>
-                                <td>Name</td>
-                                <td>Email</td>
-                                <td>Mobile</td>
-                                <td>Category</td>
-                                <td>Reg-No</td>
-                                <td>Reg-Center</td>
-                                <td>Action</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {foreach from=$orders item=order}
-                                <tr>
-                                    <td>{$order['created_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>
-                                    <td>{$order['firstname']} {$order['lastname']}</td>
-                                    <td>{$order['email']}</td>
-                                    <td>{$order['contact_no']}</td>
-                                    <td>{$order['category_name']}</td>
-                                    <td>{$order['reg_no']}</td>
-                                    <td>{$order['display_name']}</td>
-                                    <td>
-                                        <a href="/admin/register/{$order['id']}">
-                                            {if $capability > 5}
-                                                Edit
-                                            {else}
-                                                View
-                                            {/if}
-                                        </a>
-                                    </td>
-                                </tr>
-                            {/foreach}
-                        </tbody>
-                    </table>  
+                    {include file='order_table.tpl'}
                 </div>
             </div>
         </div>           

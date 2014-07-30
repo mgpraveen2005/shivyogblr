@@ -280,7 +280,7 @@ function get_users($condition = '') {
     return $rs;
 }
 
-function get_orders($event_id, $user_id = 0, $page = 1) {
+function get_orders($event_id, $user_id = 0, $page = 1, $condition = '') {
     $db = getConnection();
     $limit = 30;
     if ($page > 1) {
@@ -291,7 +291,7 @@ function get_orders($event_id, $user_id = 0, $page = 1) {
     if ($user_id)
         $where .= ' AND o.user_id = ' . $user_id;
 
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . $condition . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
     $result = $db->query($query);
     $rs = array();
     if ($result) {

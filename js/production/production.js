@@ -1242,4 +1242,28 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#js_src_results').length) {
+        $('#js_src_box').on('click', '.js_src_find', function() {
+            var name, email, mobile, reg_no;
+            name = $('#js_src_name').val().trim();
+            email = $('#js_src_email').val().trim();
+            mobile = $('#js_src_mobile').val().trim();
+            reg_no = $('#js_src_reg_no').val().trim();
+            if (name.length || email.length || mobile.length || reg_no.length) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/ajax/registrations",
+                    data: {
+                        name: name, email: email, mobile: mobile, reg_no: reg_no
+                    },
+                    success: function(data) {
+                        $('#js_src_results').html(data);
+                    },
+                    error: function(e) {
+                    }
+                });
+            }
+        });
+    }
+
 });
