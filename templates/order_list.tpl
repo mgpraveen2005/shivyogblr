@@ -27,7 +27,7 @@
                         <div id="js_src_results"></div>
                     </fieldset>
                     {$pagination}
-                    <a href="/admin/register" class="ok-btn">Add</a><br>
+                    <br><a href="/admin/register" class="ok-btn">Add</a><br>
                     {include file='order_table.tpl'}
                 </div>
             </div>

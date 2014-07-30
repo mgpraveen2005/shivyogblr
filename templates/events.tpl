@@ -5,12 +5,20 @@
     </head>
     <body>
         {include file='navbar.tpl'}
-        <div class="container">
+        <div class="container content-wrap">
+            <div class="block">
+                <ul class="horizontal-list">
+                    <header class="col-xs-12 no-pad">
+                        <h2 class="col-md-4 block-title">Event Management</h2>
+                        {include file='admin-menu.tpl'}
+                    </header>
+                </ul>
+            </div>
             <div class="col-md-12 white-box">
                 <h1>Events</h1>
                 <div class="col-xs-12 article-content">
-                    <a href="/admin/event">Add</a>
-                    <table border='1'>
+                    <!--a href="/admin/event" class="ok-btn">Add</a-->
+                    <table class="table-list">
                         <thead>
                             <tr>
                                 <td>Name</td>
@@ -25,11 +33,11 @@
                             {foreach from=$events item=event}
                             <tr>
                                 <td>{$event['event_name']}</td>
-                                <td>{$event['start_date']}</td>
-                                <td>{$event['end_date']}</td>
+                                <td>{$event['start_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>
+                                <td>{$event['end_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>
                                 <td>{$event['city']}</td>
                                 <td>{$event['event_type']}</td>
-                                <td><a href="/admin/event/{$event['id']}">Edit</a></td>
+                                <td><!--a href="/admin/event/{$event['id']}">Edit</a--></td>
                             </tr>
                             {/foreach}
                         </tbody>

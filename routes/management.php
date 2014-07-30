@@ -74,6 +74,9 @@ $app->post("/admin/group", $authenticate($app), function () use ($app) {
         });
 
 $app->get("/admin/events", $authenticate($app), function () use ($app) {
+            if ($_SESSION['capability'] < 8) {
+                $app->redirect('/admin');
+            }
             $events = get_record('event');
             foreach ($events as &$event_type) {
                 if ($event_type["event_type"])
@@ -81,10 +84,13 @@ $app->get("/admin/events", $authenticate($app), function () use ($app) {
                 else
                     $event_type["event_type"] = 'Free';
             }
-            $app->render('../templates/desktop/events.tpl', array('events' => $events));
+            $app->render('../templates/events.tpl', array('events' => $events));
         });
 
 $app->get("/admin/event(/:id)", $authenticate($app), function ($id = 0) use ($app) {
+            if ($_SESSION['capability'] < 8) {
+                $app->redirect('/admin');
+            }
             $data = array('id' => '', 'event_name' => '', 'start_date' => '', 'end_date' => '', 'event_type' => '', 'event_slug' => '', 'venue' => '', 'address' => '', 'city' => '', 'country' => '');
             $category = array();
             if ($id) {
@@ -92,7 +98,7 @@ $app->get("/admin/event(/:id)", $authenticate($app), function ($id = 0) use ($ap
                 $data = $events[0];
                 $category = get_record('category', ' WHERE event_id = ' . $id);
             }
-            $app->render('../templates/desktop/event_form.tpl', array('data' => $data, 'category' => $category));
+            $app->render('../templates/event_form.tpl', array('data' => $data, 'category' => $category));
         });
 
 $app->post("/admin/event", $authenticate($app), function () use ($app) {

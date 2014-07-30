@@ -1,13 +1,13 @@
 <html>
     <head>
-        <title>Manage Users | Shivyog Bangalore</title>
+        <title>Manage User Groups | Shivyog Bangalore</title>
         {include file='header.tpl'}
     </head>
     <body>
         {include file='navbar.tpl'}
         <div class="container content-wrap">
             <div class="col-md-12 white-box">
-                <h1>Dashboard</h1>                
+                <h1>User Group</h1>
                 <div class="col-xs-12 article-content">
                     <form action="/admin/group" method="POST">
                         <table class="table-form">

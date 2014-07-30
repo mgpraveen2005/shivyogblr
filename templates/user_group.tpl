@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Manage Users | Shivyog Bangalore</title>
+        <title>Manage User Groups | Shivyog Bangalore</title>
         {include file='header.tpl'}
     </head>
     <body>

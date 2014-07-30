@@ -2,6 +2,7 @@
     {if $capability > 7}
         <li><a href="/admin/registrations">Registrations</a></li>
         <li><a href="/admin/reports">Reports</a></li>
+        <li><a href="/admin/events">Event Management</a></li>
         <li><a href="/admin/users">User Management</a></li>
         <li><a href="/admin/groups">Group Management</a></li>
     {/if}
