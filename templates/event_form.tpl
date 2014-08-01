@@ -65,7 +65,7 @@
                                 <div class="lbl_last"><input type="text" name="country" value="{$data['country']}"/></div>
                             </div>
                         </div>
-                        <table class="flow_form">
+                        <table class="table-list">
                             <th>Category</th><th>Category Code</th><th>Amount</th>
                             {foreach from=$category key=i item=v}
                                 <tr>
@@ -74,7 +74,6 @@
                                     <td><input type="text" name="amount_{$i}" value="{$v.amount}"/></td>
                                 </tr>
                             {/foreach}
-
                         </table>
                         <div style="text-align:center;">
                             <button class="ok-btn">Save</button>

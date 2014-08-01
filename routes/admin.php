@@ -95,6 +95,9 @@ $app->get("/admin", $authenticate($app), function () use ($app) {
             if ($_SESSION['capability'] < 7) {
                 $app->redirect('/admin/registrations');
             } else {
+                
+                
+                
                 $app->render('../templates/admin.tpl');
             }
         });
