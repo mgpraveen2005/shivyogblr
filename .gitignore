@@ -6,3 +6,7 @@ node_modules
 
 ### Developer Config ###
 dev-config.php
+
+### Compiled templates ###
+templates/_compiled/
+

@@ -24,9 +24,14 @@ $app->post("/admin/reports", $authenticate($app), function () use ($app) {
                 $data['to_date'] = $data['from_date'];
             }
 
-            $report_data = get_orders_report($data);
+            $report_type = $data['report_type'];
+            if ($report_type == 'summary') {
+                $report_data = get_summary_report($data);
+            } else {
+                $report_data = get_orders_report($data);
+            }
             if (!empty($report_data)) {
-                download_send_headers('registrations');
+                download_send_headers($report_type);
                 echo array2csv($report_data);
                 die();
             } else {

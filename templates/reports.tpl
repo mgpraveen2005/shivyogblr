@@ -30,6 +30,17 @@
                                     <div class="lbl_last"><input type="text" name="to_date" id="to_date" class="sy_date" data-date-format="dd-mm-yyyy" placeholder="DD-MM-YYYY" title="DD-MM-YYYY"/></div>
                                 </div>
                             </div>
+                            <div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>Type </label></div>
+                                    <div class="lbl_last">
+                                        <select name="report_type">
+                                            <option value="registrations">Registration</option>
+                                            <option value="summary">Summary</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div style="text-align:center;">
                             <button class="ok-btn">Export</button>
