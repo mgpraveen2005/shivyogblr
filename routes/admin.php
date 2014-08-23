@@ -95,9 +95,14 @@ $app->get("/admin", $authenticate($app), function () use ($app) {
             if ($_SESSION['capability'] < 7) {
                 $app->redirect('/admin/registrations');
             } else {
-                
-                
-                
-                $app->render('../templates/admin.tpl');
+                $data['event_id'] = 1;
+                $data['from_date'] = 0;
+                $total_report = get_summary_report($data);
+
+                $data['from_date'] = date('Y-m-d');
+                $data['to_date'] = $data['from_date'];
+                $today_report = get_summary_report($data);
+
+                $app->render('../templates/admin.tpl', array('total_report' => $total_report, 'today_report' => $today_report));
             }
         });

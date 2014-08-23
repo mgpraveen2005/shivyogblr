@@ -13,55 +13,48 @@
                         {include file='admin-menu.tpl'}
                     </header>
                     <li class="post post-main">
-                        <a href="">
-                            <div class="block-top">
-
-                                <img src="" alt="" width="480" height="200">
-                            </div>
-                            <h3 class="block-heading">
-                                <!-- Title -->
-                            </h3>                               
-                            <div class="block-meta">
-                                <span class="block-category">
-                                    <span></span>
-                                    <span class="view-count"></span>
-                                </span>
-                            </div>                                             
-                        </a>
-                    </li>        
+                        <h3 class="block-heading">Total Registrations</h3> 
+                        <div class="block-top">
+                            {$totalA = 0}
+                            {$totalB = 0}
+                            {$totalC = 0}
+                            <table class="table-list">
+                                <tr><th>Reg Center</th><th>A</th><th>B</th><th>C</th></tr>
+                                {foreach from=$total_report item=list}
+                                    <tr>
+                                        <td>{$list['Reg Center']}</td>
+                                        <td>{$list['A']}</td>
+                                        <td>{$list['B']}</td>
+                                        <td>{$list['C']}</td>
+                                    </tr>
+                                    {$totalA = $totalA + $list['A']}
+                                    {$totalB = $totalB + $list['B']}
+                                    {$totalC = $totalC + $list['C']}
+                                {/foreach}
+                                <tr>
+                                    <th>Total</th>
+                                    <th>{$totalA}</th>
+                                    <th>{$totalB}</th>
+                                    <th>{$totalC}</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
                     <li class="post post-main">
-                        <a href="">
-                            <div class="block-top">
-
-                                <img src="" alt="" width="480" height="200">
-                            </div>
-                            <h3 class="block-heading">
-                                <!-- Title -->
-                            </h3>                               
-                            <div class="block-meta">
-                                <span class="block-category">
-                                    <span></span>
-                                    <span class="view-count"></span>
-                                </span>
-                            </div>                                             
-                        </a>
-                    </li>       
-                    <li class="post post-main">
-                        <a href="">
-                            <div class="block-top">
-
-                                <img src="" alt="" width="480" height="200">
-                            </div>
-                            <h3 class="block-heading">
-                                <!-- Title -->
-                            </h3>                               
-                            <div class="block-meta">
-                                <span class="block-category">
-                                    <span></span>
-                                    <span class="view-count"></span>
-                                </span>
-                            </div>                                             
-                        </a>
+                        <h3 class="block-heading">Today's Registrations</h3> 
+                        <div class="block-top">
+                            <table class="table-list">
+                                <tr><th>Reg Center</th><th>A</th><th>B</th><th>C</th></tr>
+                                        {foreach from=$today_report item=tlist}
+                                    <tr>
+                                        <td>{$tlist['Reg Center']}</td>
+                                        <td>{$tlist['A']}</td>
+                                        <td>{$tlist['B']}</td>
+                                        <td>{$tlist['C']}</td>
+                                    </tr>
+                                {/foreach}
+                            </table>
+                        </div>
                     </li>
                 </ul>
             </div>

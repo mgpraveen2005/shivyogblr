@@ -401,10 +401,12 @@ function get_summary_report($data) {
     $db = getConnection();
     $where = ' WHERE o.event_id = ' . $data['event_id'];
 
-    if ($data['to_date'] == $data['from_date'])
-        $where .= ' AND DATE(o.`created_date`) = "' . $data['from_date'] . '"';
-    else
-        $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
+    if ($data['from_date']) {
+        if ($data['to_date'] == $data['from_date'])
+            $where .= ' AND DATE(o.`created_date`) = "' . $data['from_date'] . '"';
+        else
+            $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
+    }
 
     $cat_list = array();
     $cat_query = 'SELECT `id`, `category_name` FROM category WHERE event_id = ' . $data['event_id'];
