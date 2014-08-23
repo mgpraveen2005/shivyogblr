@@ -6,9 +6,9 @@
     <body>
         {include file='navbar.tpl'}
         <div class="container nopad-right content-wrap">
-            <!--Article Content-->            
-            <div class="col-md-12 white-box">
-                <h1>Please Login here!</h1>                
+            <!--Article Content-->
+            <div class="col-md-4 white-box login-box">
+                <h1>Login here!</h1>
                 <div class="col-xs-12 article-content">
                     {if !empty($error)}
                         <p class="sy_error">{$error}</p>
