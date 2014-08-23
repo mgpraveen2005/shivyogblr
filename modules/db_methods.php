@@ -406,17 +406,27 @@ function get_summary_report($data) {
     else
         $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
 
+    $cat_list = array();
     $cat_query = 'SELECT `id`, `category_name` FROM category WHERE event_id = ' . $data['event_id'];
     $cat_result = $db->query($cat_query);
     if ($cat_result) {
-        $rs = array();
         while ($cat_row = $cat_result->fetch_assoc()) {
-            $query = 'SELECT u.display_name, o.user_id, COUNT(o.id) AS `' . $cat_row['category_name'] . '` FROM `order` o LEFT JOIN `user` u ON o.user_id = u.id ' . $where . '  AND o.`category_id` = ' . $cat_row['id'] . ' GROUP BY o.user_id';
+            $cat_list[$cat_row['category_name']] = $cat_row['id'];
+        }
+    }
+
+    $rs = array();
+    $user_query = 'SELECT id, display_name FROM `user`';
+    $user_result = $db->query($user_query);
+    while ($user_row = $user_result->fetch_assoc()) {
+        $rs[$user_row['id']]['Reg Center'] = $user_row['display_name'];
+        foreach ($cat_list as $cat_name => $cat_id) {
+            $rs[$user_row['id']][$cat_name] = 0;
+            $query = 'SELECT COUNT(o.id) AS counts FROM `order` o ' . $where . '  AND o.`category_id` = ' . $cat_id . ' AND o.`user_id` = ' . $user_row['id'];
             $result = $db->query($query);
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
-                    $rs[$row['user_id']]['Reg Center'] = $row['display_name'];
-                    $rs[$row['user_id']][$cat_row['category_name']] = $row[$cat_row['category_name']];
+                    $rs[$user_row['id']][$cat_name] = $row['counts'];
                 }
             }
         }
