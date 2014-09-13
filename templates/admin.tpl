@@ -18,7 +18,7 @@
                             {$totalA = 0}
                             {$totalB = 0}
                             {$totalC = 0}
-                            <table class="table-list text-14">
+                            <table class="table-list">
                                 <tr><th>Reg Center</th><th>A</th><th>B</th><th>C</th><th>Total</th></tr>
                                 {foreach from=$total_report item=list}
                                     <tr>
@@ -45,7 +45,7 @@
                     <li class="post post-main">
                         <h3 class="block-heading">Today's Registrations</h3> 
                         <div class="block-top">
-                            <table class="table-list text-14">
+                            <table class="table-list">
                                 <tr><th>Reg Center</th><th>A</th><th>B</th><th>C</th></tr>
                                         {foreach from=$today_report item=tlist}
                                     <tr>

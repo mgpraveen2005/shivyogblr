@@ -163,7 +163,7 @@ function save_payment($payment_data) {
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('idii', $payment_data['order_id'], $payment_data['amount'], $payment_data['payment_type'], $payment_data['dd_id']);
+    $stmt->bind_param('idsi', $payment_data['order_id'], $payment_data['amount'], $payment_data['payment_type'], $payment_data['dd_id']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -271,7 +271,7 @@ function get_total_records($table_name, $field_name = 'id', $condition = '') {
 
 function get_users($condition = '') {
     $db = getConnection();
-    $query = 'SELECT u.`id`, u.`email`, u.`display_name`, u.`group_id`, g.`group_name` FROM `user` u INNER JOIN `user_group` g ON u.`group_id` = g.`id`' . $condition;
+    $query = 'SELECT u.`id`, u.`email`, u.`display_name`, u.`group_id`, g.`group_name`, u.`is_enabled` FROM `user` u INNER JOIN `user_group` g ON u.`group_id` = g.`id`' . $condition;
     $result = $db->query($query);
     $rs = array();
     while ($row = $result->fetch_assoc()) {
@@ -291,7 +291,7 @@ function get_orders($event_id, $user_id = 0, $page = 1, $condition = '') {
     if ($user_id)
         $where .= ' AND o.user_id = ' . $user_id;
 
-    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . $condition . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`status`, ct.`category_name`, o.`created_date`, o.`reg_no`, p.payment_type, u.`display_name` FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` INNER JOIN payment p ON p.order_id = o.id LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . $condition . ' ORDER BY o.`id` DESC LIMIT ' . $limit;
     $result = $db->query($query);
     $rs = array();
     if ($result) {
@@ -304,7 +304,7 @@ function get_orders($event_id, $user_id = 0, $page = 1, $condition = '') {
 
 function get_order($id) {
     $db = getConnection();
-    $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, p.id as payment_id, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
+    $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, p.id as payment_id, p.payment_type, p.amount, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
         FROM `order` o 
         INNER JOIN customer c ON o.`customer_id` = c.`id` 
         INNER JOIN payment p ON p.order_id = o.id

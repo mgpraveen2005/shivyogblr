@@ -24,6 +24,7 @@
                                 <td>Email</td>
                                 <td>Name</td>
                                 <td>Group</td>
+                                <td>Status</td>
                                 <td>Action</td>
                             </tr>
                         </thead>
@@ -33,6 +34,12 @@
                                 <td>{$user['email']}</td>
                                 <td>{$user['display_name']}</td>
                                 <td>{$user['group_name']}</td>
+                                <td>{if $user['is_enabled']}
+                                        Enabled
+                                    {else}
+                                        Disabled
+                                    {/if}
+                                </td>
                                 <td><a href="/admin/user/{$user['id']}">Edit</a></td>
                             </tr>
                             {/foreach}

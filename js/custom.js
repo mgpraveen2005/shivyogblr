@@ -19,7 +19,20 @@ $(document).ready(function() {
     });
 
     if ($('#js_reg_form').length) {
-        $('#js_reg_form').on('change', '.js_title', function() {
+        var def_pay_type = $('.js_payment_type').val();
+        if (def_pay_type == "dd") {
+            jQuery(".js_dd_fields").show();
+        } else {
+            jQuery(".js_dd_fields").hide();
+        }
+        $('#js_reg_form').on('change', '.js_payment_type', function() {
+            var payment_type = $(this).val();
+            if (payment_type == "dd") {
+                jQuery(".js_dd_fields").show();
+            } else {
+                jQuery(".js_dd_fields").hide();
+            }
+        }).on('change', '.js_title', function() {
             var title = $(this).val();
             if (title == "Ms.") {
                 jQuery("input:radio[value=F]").prop("checked", true);
@@ -29,13 +42,26 @@ $(document).ready(function() {
         }).on('click', '.js_save', function(c) {
             c.preventDefault();
             jQuery("input, select").css('background', '#FFFFFF');
-            if (jQuery.trim(jQuery("#dd_number").val()).length < 1) {
-                jQuery("#dd_number").css('background', '#F7BE81').focus();
-                return false;
-            }
-            if (jQuery.trim(jQuery("#dd_bank").val()).length < 1) {
-                jQuery("#dd_bank").css('background', '#F7BE81').focus();
-                return false;
+            var pay_type = $('.js_payment_type').val();
+            if (pay_type == 'dd') {
+                if (jQuery.trim(jQuery("#dd_number").val()).length < 1) {
+                    jQuery("#dd_number").css('background', '#F7BE81').focus();
+                    return false;
+                }
+                if (jQuery.trim(jQuery("#dd_bank").val()).length < 1) {
+                    jQuery("#dd_bank").css('background', '#F7BE81').focus();
+                    return false;
+                }
+                if (jQuery.trim(jQuery("#dd_date").val()).length < 1) {
+                    jQuery("#dd_date").css('background', '#F7BE81').focus();
+                    return false;
+                }
+                var dd_num = jQuery("#dd_number").val();
+                if (!dd_num.match('^[0-9]{6}$')) {
+                    jQuery("#dd_number").css('background', '#F7BE81').focus();
+                    alert("DD Number must be 6 digit numerical");
+                    return false;
+                }
             }
             if (jQuery.trim(jQuery("#dd_amount").val()).length < 1) {
                 jQuery("#dd_amount").css('background', '#F7BE81').focus();
@@ -45,10 +71,7 @@ $(document).ready(function() {
                 jQuery("#category_id").css('background', '#F7BE81').focus();
                 return false;
             }
-            if (jQuery.trim(jQuery("#dd_date").val()).length < 1) {
-                jQuery("#dd_date").css('background', '#F7BE81').focus();
-                return false;
-            }
+
             var d = jQuery("#title").val();
             var a = jQuery("input:radio[name=gender]:checked").val();
             if ((d == "Mr." && a == "F") || (d == "Ms." && a == "M")) {
@@ -77,21 +100,15 @@ $(document).ready(function() {
                 jQuery("#country").css('background', '#F7BE81').focus();
                 return false;
             }
-            var dd_num = jQuery("#dd_number").val();
-            if (!dd_num.match('^[0-9]{6}$')) {
-                jQuery("#dd_number").css('background', '#F7BE81').focus();
-                alert("DD Number must be 6 digit numerical");
-                return false;
-            }
             var cat_amt = jQuery("#category_id").find(':selected').data('amt');
             if (jQuery("#dd_amount").val() < parseInt(cat_amt)) {
                 jQuery("#dd_amount").css('background', '#F7BE81').focus();
-                alert("DD Amount is less than the Category");
+                alert("Amount is less than the Category");
                 return false;
             }
             if (jQuery("#dd_amount").val() > (parseInt(cat_amt) + 100)) {
                 jQuery("#dd_amount").css('background', '#F7BE81').focus();
-                var r = confirm("DD Amount appears to be much higher than Category! Press OK to continue submission!");
+                var r = confirm("Amount appears to be much higher than Category! Press OK to continue submission!");
                 if (r == false)
                     return false;
             }

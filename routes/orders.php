@@ -27,17 +27,19 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                 $data['id'] = 0;
                 unset($_SESSION['reg_form_data']);
             } else {
-                $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => 'India', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
+                $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => 'India', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'payment_type' => '', 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
             }
             $event_id = 1;
             $category = get_record('category', ' WHERE event_id = ' . $event_id);
             if ($id) {
                 $order = get_order($id);
                 $data = $order[0];
+                if($data['payment_type'] == 'cash'){
+                    $data['dd_amount'] = $data['amount'];
+                }
                 if (isset($data['dob'])) {
                     $data['dob'] = date('d-m-Y', strtotime($data['dob']));
                 }
-
                 if (isset($data['dd_date'])) {
                     $data['dd_date'] = date('d-m-Y', strtotime($data['dd_date']));
                 }
@@ -82,21 +84,25 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
 
             $user_id = $_SESSION['user_id'];
 
-            $dd_exists = '';
-            if (!isset($data['dd_id']) || $data['dd_id'] < 1) {
-                $dd_exists = check_dd_exists($data);
-            }
-            if ($dd_exists)
-                $data['dd_id'] = $dd_exists;
-            else {
-                $data['dd_id'] = save_dd_details($data);
-            }
+            if ($data['payment_type'] == 'dd') {
+                $dd_exists = '';
+                if (!isset($data['dd_id']) || $data['dd_id'] < 1) {
+                    $dd_exists = check_dd_exists($data);
+                }
+                if ($dd_exists)
+                    $data['dd_id'] = $dd_exists;
+                else {
+                    $data['dd_id'] = save_dd_details($data);
+                }
 
-            if ($is_new) {
-                $dd_history_data = $data;
-                $dd_history_data['status'] = 'possession';
-                $dd_history_data['handed_by'] = $dd_history_data['handed_to'] = $user_id;
-                $dd_history_id = save_dd_history($dd_history_data);
+                if ($is_new) {
+                    $dd_history_data = $data;
+                    $dd_history_data['status'] = 'possession';
+                    $dd_history_data['handed_by'] = $dd_history_data['handed_to'] = $user_id;
+                    $dd_history_id = save_dd_history($dd_history_data);
+                }
+            } else {
+                $data['dd_id'] = 0;
             }
 
             $customer_data = $data;

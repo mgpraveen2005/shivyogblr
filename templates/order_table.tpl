@@ -7,6 +7,7 @@
             <td>Mobile</td>
             <td>Category</td>
             <td>Reg-No</td>
+            <td>Payment Type</td>
             <td>Reg-Center</td>
             <td>Action</td>
         </tr>
@@ -21,6 +22,7 @@
                     <td>{$order['contact_no']}</td>
                     <td>{$order['category_name']}</td>
                     <td>{$order['reg_no']}</td>
+                    <td>{$order['payment_type']|upper}</td>
                     <td>{$order['display_name']}</td>
                     <td>
                         <a href="/admin/register/{$order['id']}">

@@ -16,17 +16,18 @@
                             <h5 class="block-title">Donation Details:</h5>
                             <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>DD Number <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_number" id="dd_number" value="{$order.dd_number}" required autofocus="autofocus" /></div>
-                                    <input type="hidden" name="dd_id" value="{$order.dd_id}" />
-                                    <input type="hidden" name="payment_type" value="dd" />
-                                </div>
-                                <div class="flow_elements">
-                                    <div class="lbl_first"><label>DD Bank <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_bank" id="dd_bank" value="{$order.dd_bank}" required/></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flow_elements">
-                                    <div class="lbl_first"><label>DD Amount <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_amount" id="dd_amount" value="{$order.dd_amount}" required/></div>
+                                    <div class="lbl_first"><label>Payment Type <i class="star"></i></label></div>
+                                    <div class="lbl_last">
+                                        {if !$order.id}
+                                        <select name="payment_type" id="payment_type" class="js_payment_type" autofocus="autofocus">
+                                            <option value="cash" {if ($order.payment_type == "cash")}selected{/if} >CASH</option>
+                                            <option value="dd" {if ($order.payment_type == "dd")}selected{/if} >DD</option>
+                                        </select>
+                                        {else}
+                                            <input class="js_payment_type" type="hidden" name="payment_type" value="{$order.payment_type}" />
+                                            {$order.payment_type|upper}
+                                        {/if}
+                                    </div>
                                 </div>
                                 {if $category}
                                     <div class="flow_elements">
@@ -46,12 +47,26 @@
                             </div>
                             <div>
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>DD Date <i class="star"></i></label></div><div class="lbl_last">
-                                        <input type="text" name="dd_date" id="dd_date" class="sy_date" data-date-format="dd-mm-yyyy" value="{$order.dd_date}" placeholder="DD-MM-YYYY" title="DD-MM-YYYY" required/>
-                                    </div>
+                                    <div class="lbl_first"><label>Amount <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_amount" id="dd_amount" value="{$order.dd_amount}" required/></div>
                                 </div>
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>PAN Card No </label></div><div class="lbl_last"><input type="text" name="pan_no" id="pan_no" value="{$order.pan_no}" /></div>
+                                </div>
+                            </div>
+                            <div class="js_dd_fields">
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>DD Number <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_number" id="dd_number" value="{$order.dd_number}" /></div>
+                                    <input type="hidden" name="dd_id" value="{$order.dd_id}" />
+                                </div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>DD Bank <i class="star"></i></label></div><div class="lbl_last"><input type="text" name="dd_bank" id="dd_bank" value="{$order.dd_bank}" /></div>
+                                </div>
+                            </div>
+                            <div class="js_dd_fields">
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>DD Date <i class="star"></i></label></div><div class="lbl_last">
+                                        <input type="text" name="dd_date" id="dd_date" class="sy_date" data-date-format="dd-mm-yyyy" value="{$order.dd_date}" placeholder="DD-MM-YYYY" title="DD-MM-YYYY" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
