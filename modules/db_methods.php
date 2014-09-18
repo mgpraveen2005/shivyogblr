@@ -318,6 +318,49 @@ function get_order($id) {
     return $rs;
 }
 
+function get_order_info($event_id, $condition = '') {
+    $db = getConnection();
+    $where = ' WHERE o.event_id = ' . $event_id;
+    $query = 'SELECT c.`id`, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`id` AS order_id, o.category_id FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id`' . $where . $condition;
+    $result = $db->query($query);
+    $rs = array();
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $rs[] = $row;
+        }
+    }
+    return $rs;
+}
+
+function get_orders_history($event_id, $page = 1, $condition = '') {
+    $db = getConnection();
+    $limit = 30;
+    if ($page > 1) {
+        $offset = 30 * ($page - 1);
+        $limit = $offset . ', 30';
+    }
+    $where = ' WHERE o.event_id = ' . $event_id;
+
+    $query = 'SELECT oh.*, c.`firstname`, c.`lastname`, c.`email`, c.`contact_no`, o.`id` AS order_id FROM order_history oh INNER JOIN `order` o ON oh.order_id = o.id INNER JOIN customer c ON o.customer_id = c.id' . $where . $condition . ' ORDER BY oh.`id` DESC LIMIT ' . $limit;
+    $result = $db->query($query);
+    $rs = array();
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $rs[] = $row;
+        }
+    }
+    return $rs;
+}
+
+function save_order_history($order_data) {
+    $db = getConnection();
+    $query = 'INSERT INTO `order_history` SET order_id = ?, order_status = ?, old_reg_no = ?, new_reg_no = ?, amount = ?, remarks = ?, user_id = ?';
+    $stmt = $db->prepare($query);
+    $stmt->bind_param('iissdsi', $order_data['order_id'], $order_data['order_status'], $order_data['old_reg_no'], $order_data['new_reg_no'], $order_data['amount'], $order_data['remarks'], $order_data['user_id']);
+    $stmt->execute();
+    return getLastInsertedId($db);
+}
+
 function get_events($page = 0) {
     $limit = 20;
     if ($page > 0) {
@@ -348,9 +391,9 @@ function set_reg_no($order_id, $category_id) {
 
     $reg_no = $category_data[0]['category_slug'] . '-' . $category_data[0]['counter'];
 
-    $query = 'UPDATE `order` SET reg_no = ? WHERE id = ?';
+    $query = 'UPDATE `order` SET reg_no = ?, category_id = ? WHERE id = ?';
     $stmt = $db->prepare($query);
-    $stmt->bind_param('si', $reg_no, $order_id);
+    $stmt->bind_param('sii', $reg_no, $category_id, $order_id);
     $stmt->execute();
 
     return $reg_no;

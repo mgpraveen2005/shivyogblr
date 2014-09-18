@@ -30,11 +30,12 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                 $data = array('id' => 0, 'title' => 'Mr.', 'firstname' => '', 'lastname' => '', 'email' => '', 'contact_no' => '', 'gender' => 'M', 'dob' => '', 'address' => '', 'city' => '', 'state' => '', 'country' => 'India', 'pincode' => '', 'pan_no' => '', 'order_id' => 0, 'category_id' => 0, 'payment_id' => 0, 'payment_type' => '', 'dd_id' => 0, 'dd_amount' => '', 'dd_bank' => '', 'dd_number' => '', 'dd_date' => '', 'reg_no' => '');
             }
             $event_id = 1;
+            $order_history = array();
             $category = get_record('category', ' WHERE event_id = ' . $event_id);
             if ($id) {
                 $order = get_order($id);
                 $data = $order[0];
-                if($data['payment_type'] == 'cash'){
+                if ($data['payment_type'] == 'cash') {
                     $data['dd_amount'] = $data['amount'];
                 }
                 if (isset($data['dob'])) {
@@ -43,8 +44,9 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                 if (isset($data['dd_date'])) {
                     $data['dd_date'] = date('d-m-Y', strtotime($data['dd_date']));
                 }
+                $order_history = get_record('order_history', ' WHERE order_id = '.$id);
             }
-            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id, 'error' => $error));
+            $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id, 'error' => $error, 'order_history' => $order_history));
         });
 
 $app->post("/admin/register", $authenticate($app), function () use ($app) {
@@ -126,4 +128,46 @@ $app->post("/admin/register", $authenticate($app), function () use ($app) {
             } else {
                 $app->redirect('/admin/registrations');
             }
+        });
+
+
+$app->get("/admin/upgrades", $authenticate($app), function () use ($app) {
+            $req = $app->request();
+            $page = $req->params('pg');
+            if (!$page)
+                $page = 1;
+            $event_id = 1;
+            $user_id = 0;
+            $condition = '';
+            if ($_SESSION['capability'] < 6) {
+                $user_id = $_SESSION['user_id'];
+                $condition = ' WHERE user_id = ' . $user_id;
+            }
+            $total_records = get_total_records('`order_history`', 'id', $condition);
+            $pagination = show_pagination('/admin/upgrades', $page, $total_records);
+            $orders = get_orders_history($event_id, $page);
+            $app->render('../templates/order_change_list.tpl', array('orders' => $orders, 'pagination' => $pagination));
+        });
+
+$app->get("/admin/upgrade", $authenticate($app), function () use ($app) {
+            $event_id = 1;
+            $category = get_record('category', ' WHERE event_id = ' . $event_id);
+            $app->render('../templates/order_change_form.tpl', array('category' => $category, 'event_id' => $event_id));
+        });
+
+$app->post("/admin/upgrade", $authenticate($app), function () use ($app) {
+            $req = $app->request();
+            $data = $req->params();
+            if($data['order_status'] == 1){
+                $data['remarks'] = '';
+                save_seat_pool($data['old_category_id'], $data['old_reg_no']);
+                $data['new_reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
+                
+            } else if($data['order_status'] == 2){
+                $data['amount'] = 0;
+                $data['new_reg_no'] = $data['old_reg_no'];
+            }
+            $data['user_id'] = $_SESSION['user_id'];
+            $order_history_id = save_order_history($data);
+            $app->redirect('/admin/upgrades');
         });

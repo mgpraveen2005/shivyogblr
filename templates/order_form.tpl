@@ -19,10 +19,10 @@
                                     <div class="lbl_first"><label>Payment Type <i class="star"></i></label></div>
                                     <div class="lbl_last">
                                         {if !$order.id}
-                                        <select name="payment_type" id="payment_type" class="js_payment_type" autofocus="autofocus">
-                                            <option value="cash" {if ($order.payment_type == "cash")}selected{/if} >CASH</option>
-                                            <option value="dd" {if ($order.payment_type == "dd")}selected{/if} >DD</option>
-                                        </select>
+                                            <select name="payment_type" id="payment_type" class="js_payment_type" autofocus="autofocus">
+                                                <option value="cash" {if ($order.payment_type == "cash")}selected{/if} >CASH</option>
+                                                <option value="dd" {if ($order.payment_type == "dd")}selected{/if} >DD</option>
+                                            </select>
                                         {else}
                                             <input class="js_payment_type" type="hidden" name="payment_type" value="{$order.payment_type}" />
                                             {$order.payment_type|upper}
@@ -71,6 +71,13 @@
                             </div>
                         </div>
                         <hr>
+                        {if !empty($order_history)}
+                            <div class="flow_form">
+                                <h5 class="block-title">Registration History:</h5>
+                                {include file='order_history.tpl'}
+                            </div>
+                            <hr>
+                        {/if}
                         <div class="flow_form">
                             <h5 class="block-title">Sadhak Details:</h5>
                             <div>

@@ -103,6 +103,8 @@ $app->get("/admin", $authenticate($app), function () use ($app) {
                 $data['to_date'] = $data['from_date'];
                 $today_report = get_summary_report($data);
 
-                $app->render('../templates/admin.tpl', array('total_report' => $total_report, 'today_report' => $today_report));
+                $seat_pool = get_record('seat_pool');
+
+                $app->render('../templates/admin.tpl', array('total_report' => $total_report, 'today_report' => $today_report, 'seat_pool' => $seat_pool));
             }
         });

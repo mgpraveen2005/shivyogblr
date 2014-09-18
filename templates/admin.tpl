@@ -58,6 +58,20 @@
                             </table>
                         </div>
                     </li>
+                    <li class="post post-main">
+                        <h3 class="block-heading">Seat Pool (Vacant)</h3> 
+                        <div class="block-top">
+                            <table class="table-list">
+                                <tr><th>Seat No</th><th>Date</th></tr>
+                                {foreach from=$seat_pool item=seat}
+                                    <tr>
+                                        <td>{$seat['reg_no']}</td>
+                                        <td>{$seat['modified_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>
+                                    </tr>
+                                {/foreach}
+                            </table>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>           

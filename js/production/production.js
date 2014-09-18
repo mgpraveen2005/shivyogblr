@@ -1283,4 +1283,47 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#js_upgrade_form').length) {
+        $('#js_upgrade_form').on('click', '.js_find_reg', function() {
+            var old_reg_no = $('#js_old_reg_no').val().trim();
+            if (old_reg_no.length) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/ajax/upgrades",
+                    data: {
+                        old_reg_no: old_reg_no
+                    },
+                    success: function(data) {
+                        $('#js_upgrade_res').html(data);
+                        $('#js_order_status').val('0');
+                        $('#js_upgrade_action').show();
+                    },
+                    error: function(e) {
+                    }
+                });
+            }
+            $('.js_upgrade_blk').hide();
+            $('.js_cancel_blk').hide();
+            $('#js_upgrade_btns').hide();
+        }).on('change', '#js_order_status', function() {
+            var order_status = $(this).val();
+            if (order_status == '2') {
+                //Cancellation
+                $('.js_upgrade_blk').hide();
+                $('.js_cancel_blk').show();
+                $('#js_upgrade_btns').show();
+            } else if (order_status == '1') {
+                // Upgrade
+                $('.js_upgrade_blk').show();
+                $('.js_cancel_blk').hide();
+                $('#js_upgrade_btns').show();
+            }
+        }).on('keypress','#js_old_reg_no', function(e){
+            if(e.which == "13"){
+                e.preventDefault();
+                $('.js_find_reg').trigger('click');
+            }
+        });
+    }
+
 });
