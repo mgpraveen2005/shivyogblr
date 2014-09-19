@@ -381,6 +381,12 @@ function get_category($event_id) {
     return $rs;
 }
 
+function update_order_status($order_id, $status_text){
+    $db = getConnection();
+    $status_query = 'UPDATE `order` SET `status` = "'.$status_text.'" WHERE id = ' . $order_id;
+    $db->query($status_query);
+}
+
 function set_reg_no($order_id, $category_id) {
     $db = getConnection();
 
@@ -425,11 +431,12 @@ function get_orders_report($data) {
     else
         $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
 
-    $query = 'SELECT o.`id` AS ID, o.`reg_no` AS `Reg No`, CONCAT(c.`firstname`, " ", c.`lastname`) AS `Name`, c.`contact_no` AS `Mobile No`, c.`email` AS Email, ct.`category_name` AS `Category`, DATE(o.`created_date`) AS `Date`, TIME(o.`created_date`) AS `Time`, 
+    $query = 'SELECT o.`id` AS ID, o.`reg_no` AS `Reg No`, CONCAT(c.`firstname`, " ", c.`lastname`) AS `Name`, c.`contact_no` AS `Mobile No`, c.`email` AS Email, ct.`category_name` AS `Category`, DATE(o.`created_date`) AS `Date`, TIME(o.`created_date`) AS `Time`, p.amount AS `Category Amount`, p.payment_type AS `Payment Type`,
         dd.`dd_amount` AS `DD Amount`, dd.`dd_number` AS `DD No`, dd.`dd_bank` AS `Bank`, dd.`dd_date` AS `DD Date`, 
         c.`title` AS Title, c.`gender` AS Gender, c.`dob` AS `DOB`, c.`address` AS Address, c.`city` AS City, c.`state` AS State, c.`country` AS Country, c.`pincode` AS `PIN Code`, c.pan_no AS `PAN No`,
+        o.status AS `Status`, oh.amount AS `Upgrade Amount`, oh.remarks AS `Remarks`, 
         u.`display_name` AS `Reg Center` 
-        FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` INNER JOIN payment p ON o.`id` = p.`order_id` LEFT JOIN dd_details dd ON p.`dd_id` = dd.`id` LEFT JOIN user u ON o.`user_id` = u.`id`' . $where . ' ORDER BY o.`id`';
+        FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` INNER JOIN payment p ON o.`id` = p.`order_id` LEFT JOIN dd_details dd ON p.`dd_id` = dd.`id` LEFT JOIN `user` u ON o.`user_id` = u.`id` LEFT JOIN order_history oh ON o.id = oh.order_id ' . $where . ' ORDER BY o.`id`';
     $result = $db->query($query);
     $rs = array();
     if ($result) {
@@ -441,6 +448,45 @@ function get_orders_report($data) {
 }
 
 function get_summary_report($data) {
+    $db = getConnection();
+    $where = ' WHERE o.event_id = ' . $data['event_id'];
+
+    if ($data['from_date']) {
+        if ($data['to_date'] == $data['from_date'])
+            $where .= ' AND DATE(o.`created_date`) = "' . $data['from_date'] . '"';
+        else
+            $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
+    }
+
+    $cat_list = array();
+    $cat_query = 'SELECT `id`, `category_name` FROM category WHERE event_id = ' . $data['event_id'];
+    $cat_result = $db->query($cat_query);
+    if ($cat_result) {
+        while ($cat_row = $cat_result->fetch_assoc()) {
+            $cat_list[$cat_row['category_name']] = $cat_row['id'];
+        }
+    }
+
+    $rs = array();
+    $user_query = 'SELECT id, display_name FROM `user`';
+    $user_result = $db->query($user_query);
+    while ($user_row = $user_result->fetch_assoc()) {
+        $rs[$user_row['id']]['Reg Center'] = $user_row['display_name'];
+        foreach ($cat_list as $cat_name => $cat_id) {
+            $rs[$user_row['id']][$cat_name] = 0;
+            $query = 'SELECT COUNT(o.id) AS counts FROM `order` o ' . $where . '  AND o.`category_id` = ' . $cat_id . ' AND o.`user_id` = ' . $user_row['id'];
+            $result = $db->query($query);
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $rs[$user_row['id']][$cat_name] = $row['counts'];
+                }
+            }
+        }
+    }
+    return $rs;
+}
+
+function get_order_history_report($data){
     $db = getConnection();
     $where = ' WHERE o.event_id = ' . $data['event_id'];
 

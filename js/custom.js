@@ -172,7 +172,7 @@ $(document).ready(function() {
             } else if (order_status == '1') {
                 // Upgrade
                 $('.js_upgrade_blk').show();
-                $('.js_cancel_blk').hide();
+                $('.js_cancel_blk').show();
                 $('#js_upgrade_btns').show();
             }
         }).on('keypress','#js_old_reg_no', function(e){

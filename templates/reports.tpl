@@ -37,6 +37,8 @@
                                         <select name="report_type">
                                             <option value="registrations">Registration</option>
                                             <option value="summary">Summary</option>
+                                            <option value="upgrades">Upgrades</option>
+                                            <option value="cancellations">Cancellations</option>
                                         </select>
                                     </div>
                                 </div>

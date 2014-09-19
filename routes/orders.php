@@ -159,14 +159,15 @@ $app->post("/admin/upgrade", $authenticate($app), function () use ($app) {
             $req = $app->request();
             $data = $req->params();
             if($data['order_status'] == 1){
-                $data['remarks'] = '';
                 save_seat_pool($data['old_category_id'], $data['old_reg_no']);
                 $data['new_reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
-                
+                $status_text = 'Upgraded';
             } else if($data['order_status'] == 2){
                 $data['amount'] = 0;
                 $data['new_reg_no'] = $data['old_reg_no'];
+                $status_text = 'Cancelled';
             }
+            update_order_status($data['order_id'], $status_text);
             $data['user_id'] = $_SESSION['user_id'];
             $order_history_id = save_order_history($data);
             $app->redirect('/admin/upgrades');

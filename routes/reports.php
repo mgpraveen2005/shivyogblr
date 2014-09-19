@@ -25,10 +25,19 @@ $app->post("/admin/reports", $authenticate($app), function () use ($app) {
             }
 
             $report_type = $data['report_type'];
-            if ($report_type == 'summary') {
-                $report_data = get_summary_report($data);
-            } else {
-                $report_data = get_orders_report($data);
+            switch ($report_type) {
+                case 'summary':
+                    $report_data = get_summary_report($data);
+                    break;
+                case 'upgrades':
+                    $report_data = get_order_history_report($data);
+                    break;
+                case 'cancellations':
+                    $report_data = get_order_history_report($data);
+                    break;
+                default:
+                    $report_data = get_orders_report($data);
+                    break;
             }
             if (!empty($report_data)) {
                 download_send_headers($report_type);
