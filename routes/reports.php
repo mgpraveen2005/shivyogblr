@@ -30,9 +30,11 @@ $app->post("/admin/reports", $authenticate($app), function () use ($app) {
                     $report_data = get_summary_report($data);
                     break;
                 case 'upgrades':
+                    $data['order_status'] = 1;
                     $report_data = get_order_history_report($data);
                     break;
                 case 'cancellations':
+                    $data['order_status'] = 2;
                     $report_data = get_order_history_report($data);
                     break;
                 default:

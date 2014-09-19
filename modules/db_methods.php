@@ -381,9 +381,9 @@ function get_category($event_id) {
     return $rs;
 }
 
-function update_order_status($order_id, $status_text){
+function update_order_status($order_id, $status_text) {
     $db = getConnection();
-    $status_query = 'UPDATE `order` SET `status` = "'.$status_text.'" WHERE id = ' . $order_id;
+    $status_query = 'UPDATE `order` SET `status` = "' . $status_text . '" WHERE id = ' . $order_id;
     $db->query($status_query);
 }
 
@@ -486,40 +486,21 @@ function get_summary_report($data) {
     return $rs;
 }
 
-function get_order_history_report($data){
+function get_order_history_report($data) {
     $db = getConnection();
-    $where = ' WHERE o.event_id = ' . $data['event_id'];
+    $where = ' WHERE o.event_id = ' . $data['event_id'] . ' AND oh.order_status = ' . $data['order_status'];
 
-    if ($data['from_date']) {
-        if ($data['to_date'] == $data['from_date'])
-            $where .= ' AND DATE(o.`created_date`) = "' . $data['from_date'] . '"';
-        else
-            $where .= ' AND (DATE(o.`created_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
-    }
+    if ($data['to_date'] == $data['from_date'])
+        $where .= ' AND DATE(oh.`modified_date`) = "' . $data['from_date'] . '"';
+    else
+        $where .= ' AND (DATE(oh.`modified_date`) BETWEEN "' . $data['from_date'] . '" AND "' . $data['to_date'] . '")';
 
-    $cat_list = array();
-    $cat_query = 'SELECT `id`, `category_name` FROM category WHERE event_id = ' . $data['event_id'];
-    $cat_result = $db->query($cat_query);
-    if ($cat_result) {
-        while ($cat_row = $cat_result->fetch_assoc()) {
-            $cat_list[$cat_row['category_name']] = $cat_row['id'];
-        }
-    }
-
+    $query = 'SELECT oh.order_id AS `Registration ID`, o.status AS `Status`, oh.old_reg_no AS `Old Reg No`, oh.new_reg_no AS `New Reg No`, oh.amount AS `Amount`, oh.remarks AS `Remarks`, c.`firstname` AS `First Name`, c.`lastname` AS `Last Name`, c.`email` AS `Email`, c.`contact_no` AS `Mobile No` FROM order_history oh INNER JOIN `order` o ON oh.order_id = o.id INNER JOIN customer c ON o.customer_id = c.id' . $where . ' ORDER BY oh.`id`';
+    $result = $db->query($query);
     $rs = array();
-    $user_query = 'SELECT id, display_name FROM `user`';
-    $user_result = $db->query($user_query);
-    while ($user_row = $user_result->fetch_assoc()) {
-        $rs[$user_row['id']]['Reg Center'] = $user_row['display_name'];
-        foreach ($cat_list as $cat_name => $cat_id) {
-            $rs[$user_row['id']][$cat_name] = 0;
-            $query = 'SELECT COUNT(o.id) AS counts FROM `order` o ' . $where . '  AND o.`category_id` = ' . $cat_id . ' AND o.`user_id` = ' . $user_row['id'];
-            $result = $db->query($query);
-            if ($result) {
-                while ($row = $result->fetch_assoc()) {
-                    $rs[$user_row['id']][$cat_name] = $row['counts'];
-                }
-            }
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $rs[] = $row;
         }
     }
     return $rs;
