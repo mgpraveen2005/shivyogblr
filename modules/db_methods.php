@@ -136,11 +136,11 @@ function save_order($order_data) {
         $where = ', created_date = NOW(), user_id = ' . $order_data['user_id'];
         $get_id = 1;
     }
-    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?';
+    $set_query = ' SET event_id = ?, customer_id = ?, category_id = ?, order_note = ?';
 
     $query .= $set_query . $where;
     $stmt = $db->prepare($query);
-    $stmt->bind_param('iii', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id']);
+    $stmt->bind_param('iiis', $order_data['event_id'], $order_data['customer_id'], $order_data['category_id'], $order_data['order_note']);
     $stmt->execute();
     if ($get_id)
         return getLastInsertedId($db);
@@ -304,7 +304,7 @@ function get_orders($event_id, $user_id = 0, $page = 1, $condition = '') {
 
 function get_order($id) {
     $db = getConnection();
-    $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, p.id as payment_id, p.payment_type, p.amount, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
+    $query = 'SELECT c.*, o.id as order_id, o.category_id, o.`status`, o.reg_no, o.order_note, p.id as payment_id, p.payment_type, p.amount, d.id as dd_id, d.dd_amount, d.dd_bank, d.dd_number, d.dd_date
         FROM `order` o 
         INNER JOIN customer c ON o.`customer_id` = c.`id` 
         INNER JOIN payment p ON p.order_id = o.id
@@ -434,7 +434,7 @@ function get_orders_report($data) {
     $query = 'SELECT o.`id` AS ID, o.`reg_no` AS `Reg No`, CONCAT(c.`firstname`, " ", c.`lastname`) AS `Name`, c.`contact_no` AS `Mobile No`, c.`email` AS Email, ct.`category_name` AS `Category`, DATE(o.`created_date`) AS `Date`, TIME(o.`created_date`) AS `Time`, p.amount AS `Category Amount`, p.payment_type AS `Payment Type`,
         dd.`dd_amount` AS `DD Amount`, dd.`dd_number` AS `DD No`, dd.`dd_bank` AS `Bank`, dd.`dd_date` AS `DD Date`, 
         c.`title` AS Title, c.`gender` AS Gender, c.`dob` AS `DOB`, c.`address` AS Address, c.`city` AS City, c.`state` AS State, c.`country` AS Country, c.`pincode` AS `PIN Code`, c.pan_no AS `PAN No`,
-        o.status AS `Status`, oh.amount AS `Upgrade Amount`, oh.remarks AS `Remarks`, 
+        o.order_note AS `Registration Remarks`, o.status AS `Status`, oh.amount AS `Upgrade Amount`, oh.remarks AS `Modification Remarks`, 
         u.`display_name` AS `Reg Center` 
         FROM `order` o INNER JOIN customer c ON o.`customer_id` = c.`id` INNER JOIN category ct ON ct.`id` = o.`category_id` INNER JOIN payment p ON o.`id` = p.`order_id` LEFT JOIN dd_details dd ON p.`dd_id` = dd.`id` LEFT JOIN `user` u ON o.`user_id` = u.`id` LEFT JOIN order_history oh ON o.id = oh.order_id ' . $where . ' ORDER BY o.`id`';
     $result = $db->query($query);

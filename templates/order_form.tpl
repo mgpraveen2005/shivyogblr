@@ -18,15 +18,10 @@
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>Payment Type <i class="star"></i></label></div>
                                     <div class="lbl_last">
-                                        {if !$order.id}
-                                            <select name="payment_type" id="payment_type" class="js_payment_type" autofocus="autofocus">
-                                                <option value="cash" {if ($order.payment_type == "cash")}selected{/if} >CASH</option>
-                                                <option value="dd" {if ($order.payment_type == "dd")}selected{/if} >DD</option>
-                                            </select>
-                                        {else}
-                                            <input class="js_payment_type" type="hidden" name="payment_type" value="{$order.payment_type}" />
-                                            {$order.payment_type|upper}
-                                        {/if}
+                                        <select name="payment_type" id="payment_type" class="js_payment_type" autofocus="autofocus">
+                                            <option value="cash" {if ($order.payment_type == "cash")}selected{/if} >CASH</option>
+                                            <option value="dd" {if ($order.payment_type == "dd")}selected{/if} >DD</option>
+                                        </select>
                                     </div>
                                 </div>
                                 {if $category}
@@ -66,6 +61,13 @@
                                 <div class="flow_elements">
                                     <div class="lbl_first"><label>DD Date <i class="star"></i></label></div><div class="lbl_last">
                                         <input type="text" name="dd_date" id="dd_date" class="sy_date" data-date-format="dd-mm-yyyy" value="{$order.dd_date}" placeholder="DD-MM-YYYY" title="DD-MM-YYYY" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>Remarks </label></div><div class="lbl_last">
+                                        <textarea name="order_note">{$order.order_note}</textarea>
                                     </div>
                                 </div>
                             </div>
