@@ -39,6 +39,7 @@
                                             <option value="summary">Summary</option>
                                             <option value="upgrades">Upgrades</option>
                                             <option value="cancellations">Cancellations</option>
+                                            <option value="namechange">Name Changes</option>
                                         </select>
                                     </div>
                                 </div>
