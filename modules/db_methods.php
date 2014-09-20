@@ -387,6 +387,12 @@ function update_order_status($order_id, $status_text) {
     $db->query($status_query);
 }
 
+function update_order_names($data) {
+    $db = getConnection();
+    $status_query = 'UPDATE `customer` SET `firstname` = "' . $data['new_first_name'] . '", `lastname` = "'.$data['new_last_name'].'" WHERE id = ' . $data['cust_id'];
+    $db->query($status_query);
+}
+
 function set_reg_no($order_id, $category_id) {
     $db = getConnection();
 

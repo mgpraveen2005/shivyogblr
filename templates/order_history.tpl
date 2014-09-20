@@ -8,6 +8,8 @@
                     Upgraded
                 {else if $order['order_status'] == 2}
                     Cancelled
+                {else if $order['order_status'] == 3}
+                    Name Changed
                 {/if}
             </td>
             <td>{$order['old_reg_no']}</td>

@@ -7,7 +7,7 @@
         {include file='navbar.tpl'}
         <div class="container content-wrap">
             <div class="col-md-12 white-box">
-                <h1>Upgrade/Cancellation</h1>
+                <h1>Upgrade / Cancellation / NameChange</h1>
                 <div class="col-xs-12 article-content">
                     <form action="/admin/upgrade" method="post" name="upgrade_form" id="js_upgrade_form">
                         <input type="hidden" name="event_id" value="{$event_id}" />
@@ -29,6 +29,7 @@
                                             <option value="0" >Choose</option>
                                             <option value="1" >Upgrade</option>
                                             <option value="2" >Cancellation</option>
+                                            <option value="3" >Name Change</option>
                                         </select>
                                     </div>
                                 </div>
@@ -55,9 +56,17 @@
                                     <div class="lbl_first"><label>Amount </label></div><div class="lbl_last"><input type="text" name="amount" id="js_amount" value="" /></div>
                                 </div>
                             </div>
+                            <div class="js_namechange_blk" style="display:none;">
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>New First Name </label></div><div class="lbl_last"><input type="text" name="new_first_name" id="js_new_first_name" value="" /></div>
+                                </div>
+                                <div class="flow_elements">
+                                    <div class="lbl_first"><label>New Last Name </label></div><div class="lbl_last"><input type="text" name="new_last_name" id="js_new_last_name" value="" /></div>
+                                </div>
+                            </div>
                             <div class="js_cancel_blk" style="display:none;">
                                 <div class="flow_elements">
-                                    <div class="lbl_first"><label>Remarks </label></div><div class="lbl_last"><textarea name="remarks"></textarea></div>
+                                    <div class="lbl_first"><label>Remarks </label></div><div class="lbl_last"><textarea name="remarks" id="js_remarks"></textarea></div>
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Upgrades | Shivyog Bangalore</title>
+        <title>Registration Modifications | Shivyog Bangalore</title>
         {include file='header.tpl'}
     </head>
     <body>
@@ -9,13 +9,13 @@
             <div class="block">
                 <ul class="horizontal-list">
                     <header class="col-xs-12 no-pad">
-                        <h2 class="col-md-4 block-title">Upgrades/Cancellations</h2>
+                        <h2 class="col-md-4 block-title">Registration Modifications</h2>
                         {include file='admin-menu.tpl'}
                     </header>
                 </ul>
             </div>
             <div class="col-md-12 white-box">
-                <h1>Upgrades/Cancellations</h1>
+                <h1>Upgrade / Cancellation / NameChange</h1>
                 <div class="col-xs-12 article-content">
                     <a href="/admin/upgrade" class="ok-btn">Add</a><br>
                     <table class="table-list">
@@ -43,6 +43,8 @@
                                             Upgrade
                                         {else if $order['order_status'] == 2}
                                             Cancelled
+                                        {else if $order['order_status'] == 3}
+                                            Name Changed
                                         {/if}
                                     </td>
                                     <td>{$order['modified_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>

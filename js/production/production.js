@@ -1307,9 +1307,18 @@ $(document).ready(function() {
             $('#js_upgrade_btns').hide();
         }).on('change', '#js_order_status', function() {
             var order_status = $(this).val();
-            if (order_status == '2') {
+            if (order_status == '3') {
+                // Name change
+                $('.js_upgrade_blk').hide();
+                $('.js_namechange_blk').show();
+                $('.js_cancel_blk').show();
+                $('#js_upgrade_btns').show();
+                var def_rem = $('#js_upgrade_res').text();
+                $('#js_remarks').html(def_rem);
+            } else if (order_status == '2') {
                 //Cancellation
                 $('.js_upgrade_blk').hide();
+                $('.js_namechange_blk').hide();
                 $('.js_cancel_blk').show();
                 $('#js_upgrade_btns').show();
             } else if (order_status == '1') {
@@ -1317,6 +1326,7 @@ $(document).ready(function() {
                 $('.js_upgrade_blk').show();
                 $('.js_cancel_blk').show();
                 $('#js_upgrade_btns').show();
+                $('.js_namechange_blk').hide();
             }
         }).on('keypress','#js_old_reg_no', function(e){
             if(e.which == "13"){

@@ -44,7 +44,7 @@ $app->get("/admin/register(/:id)", $authenticate($app), function ($id = 0) use (
                 if (isset($data['dd_date'])) {
                     $data['dd_date'] = date('d-m-Y', strtotime($data['dd_date']));
                 }
-                $order_history = get_record('order_history', ' WHERE order_id = '.$id);
+                $order_history = get_record('order_history', ' WHERE order_id = ' . $id);
             }
             $app->render('../templates/order_form.tpl', array('category' => $category, 'order' => $data, 'event_id' => $event_id, 'error' => $error, 'order_history' => $order_history));
         });
@@ -158,14 +158,23 @@ $app->get("/admin/upgrade", $authenticate($app), function () use ($app) {
 $app->post("/admin/upgrade", $authenticate($app), function () use ($app) {
             $req = $app->request();
             $data = $req->params();
-            if($data['order_status'] == 1){
-                save_seat_pool($data['old_category_id'], $data['old_reg_no']);
-                $data['new_reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
-                $status_text = 'Upgraded';
-            } else if($data['order_status'] == 2){
-                $data['amount'] = 0;
-                $data['new_reg_no'] = $data['old_reg_no'];
-                $status_text = 'Cancelled';
+            switch ($data['order_status']) {
+                case 1:
+                    save_seat_pool($data['old_category_id'], $data['old_reg_no']);
+                    $data['new_reg_no'] = set_reg_no($data['order_id'], $data['category_id']);
+                    $status_text = 'Upgraded';
+                    break;
+                case 2:
+                    $data['amount'] = 0;
+                    $data['new_reg_no'] = $data['old_reg_no'];
+                    $status_text = 'Cancelled';
+                    break;
+                case 3:
+                    $data['amount'] = 0;
+                    $data['new_reg_no'] = $data['old_reg_no'];
+                    $status_text = 'Name Changed';
+                    update_order_names($data);
+                    break;
             }
             update_order_status($data['order_id'], $status_text);
             $data['user_id'] = $_SESSION['user_id'];
