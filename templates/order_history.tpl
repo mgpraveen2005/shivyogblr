@@ -1,7 +1,7 @@
 <table class="table-list">
     <tr><th>Status</th><th>Old Reg No</th><th>New Reg No</th><th>Amount</th>
-    <th>Remarks</th><th>Date/Time</th></tr>
-    {foreach from=$order_history item=order}
+        <th>Remarks</th><th>Date/Time</th></tr>
+            {foreach from=$order_history item=order}
         <tr>
             <td>
                 {if $order['order_status'] == 1}
@@ -10,6 +10,8 @@
                     Cancelled
                 {else if $order['order_status'] == 3}
                     Name Changed
+                {else if $order['order_status'] == 4}
+                    Not Attended
                 {/if}
             </td>
             <td>{$order['old_reg_no']}</td>

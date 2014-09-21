@@ -40,6 +40,7 @@
                                             <option value="upgrades">Upgrades</option>
                                             <option value="cancellations">Cancellations</option>
                                             <option value="namechange">Name Changes</option>
+                                            <option value="notattended">Not Attended</option>
                                         </select>
                                     </div>
                                 </div>

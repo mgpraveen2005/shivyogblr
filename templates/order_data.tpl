@@ -1,11 +1,11 @@
 <div class="flow_elements">
-    <div class="lbl_first"><label>Mobile No: </label></div><div class="lbl_last"><strong>{$data.contact_no}</strong></div>
-</div>
-<div class="flow_elements">
     <div class="lbl_first"><label>First Name: </label></div><div class="lbl_last"><strong>{$data.firstname}</strong></div>
 </div>
 <div class="flow_elements">
     <div class="lbl_first"><label>Last Name: </label></div><div class="lbl_last"><strong>{$data.lastname}</strong></div>
+</div>
+<div class="flow_elements">
+    <div class="lbl_first"><label>Mobile No: </label></div><div class="lbl_last"><strong>{$data.contact_no}</strong></div>
 </div>
 <div class="flow_elements">
     <div class="lbl_first"><label>Email: </label></div><div class="lbl_last"><strong>{$data.email}</strong></div>

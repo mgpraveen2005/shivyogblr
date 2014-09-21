@@ -175,6 +175,11 @@ $app->post("/admin/upgrade", $authenticate($app), function () use ($app) {
                     $status_text = 'Name Changed';
                     update_order_names($data);
                     break;
+                case 4:
+                    $data['amount'] = 0;
+                    $data['new_reg_no'] = $data['old_reg_no'];
+                    $status_text = 'Not Attended';
+                    break;
             }
             update_order_status($data['order_id'], $status_text);
             $data['user_id'] = $_SESSION['user_id'];

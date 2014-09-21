@@ -30,6 +30,7 @@
                                             <option value="1" >Upgrade</option>
                                             <option value="2" >Cancellation</option>
                                             <option value="3" >Name Change</option>
+                                            <option value="4" >Not Attended</option>
                                         </select>
                                     </div>
                                 </div>

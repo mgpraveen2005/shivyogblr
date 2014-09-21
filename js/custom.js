@@ -100,18 +100,18 @@ $(document).ready(function() {
                 jQuery("#country").css('background', '#F7BE81').focus();
                 return false;
             }
-            var cat_amt = jQuery("#category_id").find(':selected').data('amt');
-            if (jQuery("#dd_amount").val() < parseInt(cat_amt)) {
-                jQuery("#dd_amount").css('background', '#F7BE81').focus();
-                alert("Amount is less than the Category");
-                return false;
-            }
-            if (jQuery("#dd_amount").val() > (parseInt(cat_amt) + 100)) {
-                jQuery("#dd_amount").css('background', '#F7BE81').focus();
-                var r = confirm("Amount appears to be much higher than Category! Press OK to continue submission!");
-                if (r == false)
-                    return false;
-            }
+//            var cat_amt = jQuery("#category_id").find(':selected').data('amt');
+//            if (jQuery("#dd_amount").val() < parseInt(cat_amt)) {
+//                jQuery("#dd_amount").css('background', '#F7BE81').focus();
+//                alert("Amount is less than the Category");
+//                return false;
+//            }
+//            if (jQuery("#dd_amount").val() > (parseInt(cat_amt) + 100)) {
+//                jQuery("#dd_amount").css('background', '#F7BE81').focus();
+//                var r = confirm("Amount appears to be much higher than Category! Press OK to continue submission!");
+//                if (r == false)
+//                    return false;
+//            }
             jQuery("#js_reg_form").trigger("submit");
         });
     }
@@ -172,8 +172,8 @@ $(document).ready(function() {
                 $('#js_upgrade_btns').show();
                 var def_rem = $('#js_upgrade_res').text();
                 $('#js_remarks').html(def_rem);
-            } else if (order_status == '2') {
-                //Cancellation
+            } else if (order_status == '2' || order_status == '4') {
+                //Cancellation / Not Attended
                 $('.js_upgrade_blk').hide();
                 $('.js_namechange_blk').hide();
                 $('.js_cancel_blk').show();

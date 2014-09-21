@@ -41,6 +41,10 @@ $app->post("/admin/reports", $authenticate($app), function () use ($app) {
                     $data['order_status'] = 3;
                     $report_data = get_order_history_report($data);
                     break;
+                case 'notattended':
+                    $data['order_status'] = 4;
+                    $report_data = get_order_history_report($data);
+                    break;
                 default:
                     $report_data = get_orders_report($data);
                     break;

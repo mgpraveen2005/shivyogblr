@@ -45,6 +45,8 @@
                                             Cancelled
                                         {else if $order['order_status'] == 3}
                                             Name Changed
+                                        {else if $order['order_status'] == 4}
+                                            Not Attended
                                         {/if}
                                     </td>
                                     <td>{$order['modified_date']|date_format:'%d-%m-%Y %H:%M:%S'}</td>
